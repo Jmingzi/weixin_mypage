@@ -1,0 +1,77 @@
+<style lang="less">
+    .container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        box-sizing: border-box;
+    }
+</style>
+
+<script>
+    import wepy from 'wepy'
+    import 'wepy-async-function'
+    import AV from './libs/av-weapp-min.js'
+    
+    export default class extends wepy.app {
+        config = {
+            pages: [
+                'pages/index'
+            ],
+            window: {
+                backgroundTextStyle: 'light',
+                navigationBarBackgroundColor: '#fff',
+                navigationBarTitleText: 'WeChat',
+                navigationBarTextStyle: 'black'
+            }
+        }
+        
+        globalData = {
+            user: null,
+            userInfo: null
+        }
+        
+        constructor () {
+            super()
+            this.use('requestfix')
+        }
+        
+        onLaunch() {
+            AV.init({
+                appId: 'mqdKEWLXpMLp7oMoIhofY1ed-gzGzoHsz',
+                appKey: 'snUidS3iEEm67sslz7JovM6j',
+            })
+            
+            this.login()
+        }
+        
+        sleep (s) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve('promise resolved')
+                }, s * 1000)
+            })
+        }
+        
+        async login () {
+            AV.User.loginWithWeapp().then(user => {
+                this.globalData.user = user.toJSON()
+            }).catch(console.error)
+        }
+        
+        getUserInfo(cb) {
+            const that = this
+            if (this.globalData.userInfo) {
+                return this.globalData.userInfo
+            }
+            wepy.getUserInfo({
+                success (res) {
+                    // console.log(res)
+                    that.globalData.userInfo = res.userInfo
+                    cb && cb(res.userInfo)
+                }
+            })
+        }
+    }
+</script>
