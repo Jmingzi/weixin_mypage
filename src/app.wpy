@@ -3,12 +3,20 @@
         height: 100%;
         display: flex;
         flex-direction: column;
-        //align-items: center;
         //justify-content: space-between;
         box-sizing: border-box;
         background-color: #f5f5f5;
         font-size: 14px;
     }
+    .flex-center-between {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .color-999 { color: #999; }
+    .color-666 { color: #666; }
+    .font-12 { font-size: 12px; }
+    .m-l20 { margin-left: 20rpx; }
 </style>
 
 <script>
@@ -55,22 +63,6 @@
                 appId: 'mqdKEWLXpMLp7oMoIhofY1ed-gzGzoHsz',
                 appKey: 'snUidS3iEEm67sslz7JovM6j',
             })
-
-            // this.login()
-        }
-
-        sleep (s) {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    resolve('promise resolved')
-                }, s * 1000)
-            })
-        }
-
-        async login () {
-            AV.User.loginWithWeapp().then(user => {
-                this.globalData.user = user.toJSON()
-            }).catch(console.error)
         }
 
         getUserInfo (cb) {
