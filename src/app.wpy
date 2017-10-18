@@ -3,9 +3,11 @@
         height: 100%;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
+        //align-items: center;
+        //justify-content: space-between;
         box-sizing: border-box;
+        background-color: #f5f5f5;
+        font-size: 14px;
     }
 </style>
 
@@ -13,7 +15,7 @@
     import wepy from 'wepy'
     import 'wepy-async-function'
     import AV from './libs/av-weapp-min.js'
-    
+
     export default class extends wepy.app {
         config = {
             pages: [
@@ -21,31 +23,42 @@
             ],
             window: {
                 backgroundTextStyle: 'light',
-                navigationBarBackgroundColor: '#fff',
-                navigationBarTitleText: 'WeChat',
-                navigationBarTextStyle: 'black'
-            }
+                navigationBarBackgroundColor: '#FC9153',
+                navigationBarTitleText: '爵唯',
+                navigationBarTextStyle: 'white',
+                enablePullDownRefresh: true
+            },
+//            tabBar: {
+//                color: '#666666',
+//                selectedColor: '#FC9153',
+//                backgroundColor: '#ffffff',
+//                list: [
+//                    {
+//                        text: ''
+//                    }
+//                ]
+//            }
         }
-        
+
         globalData = {
             user: null,
             userInfo: null
         }
-        
+
         constructor () {
             super()
             this.use('requestfix')
         }
-        
+
         onLaunch() {
             AV.init({
                 appId: 'mqdKEWLXpMLp7oMoIhofY1ed-gzGzoHsz',
                 appKey: 'snUidS3iEEm67sslz7JovM6j',
             })
-            
-            this.login()
+
+            // this.login()
         }
-        
+
         sleep (s) {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
@@ -53,25 +66,31 @@
                 }, s * 1000)
             })
         }
-        
+
         async login () {
             AV.User.loginWithWeapp().then(user => {
                 this.globalData.user = user.toJSON()
             }).catch(console.error)
         }
-        
-        getUserInfo(cb) {
-            const that = this
+
+        getUserInfo (cb) {
+            let self = this
+
             if (this.globalData.userInfo) {
-                return this.globalData.userInfo
+                cb(this.globalData.userInfo)
+                return
             }
-            wepy.getUserInfo({
-                success (res) {
-                    // console.log(res)
-                    that.globalData.userInfo = res.userInfo
-                    cb && cb(res.userInfo)
-                }
-            })
+
+            AV.User.loginWithWeapp().then(user => {
+                self.globalData.user = user.toJSON()
+
+                wepy.getUserInfo({
+                    success (res) {
+                        self.globalData.userInfo = res.userInfo
+                        cb && cb(res.userInfo)
+                    }
+                })
+            }).catch(console.error)
         }
     }
 </script>
