@@ -1,0 +1,28 @@
+.flex-center-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.color-fff { color: #fff; }
+.color-999 { color: #999; }
+.color-666 { color: #666; }
+
+.font-12 { font-size: 12px; }
+
+.m-l20 { margin-left: 20rpx; }
+.m-tb20 { margin: 20rpx 0; }
+
+.bg-ff { background-color: #fff; }
+.bg-f2 { background-color: #f2f2f2; }
+.bg-fa { background-color: #fafafa; }
+
+.p-r { position: relative; }
+.p-a { position: absolute; }
+.t-0 { top: 0; }
+.l-0 { left: 0; }
+
+.w-100 { width: 100%; }
+.h-100 { height: 100%; }
+
+.blur-10 { filter: blur(10px); }
