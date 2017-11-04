@@ -1,8 +1,12 @@
 <style lang="less">
     .user-info {
+        height: 160rpx;
         padding: 30rpx 40rpx;
-        background-color: #fff;
-        margin: 20rpx 0;
+        background-color: #FC9153;
+
+        .user-mask {
+            background-color: rgba(0,0,0,.3);
+        }
     }
     .left {
         display: inline-block;
@@ -15,17 +19,15 @@
         }
     }
 
-    .block {
-        background-color: #fff;
-    }
     .menu-block {
         display: flex;
         justify-content: space-between;
         align-items: center;
+
         &:first-child {
             border-bottom: 1rpx #ededed solid;
         }
-        
+
         .menu {
             display: flex;
             align-items: center;
@@ -44,22 +46,22 @@
             background-color: #eee;
         }
     }
-    
+
     .qms {
         background-color: #fff;
         padding: 20rpx 30rpx;
         margin-bottom: 20rpx;
-    
+
         .qms-image {
             width: 60rpx;
             height: 60rpx;
         }
-        
+
         .avatar-info {
             display: flex;
             align-items: center;
         }
-        
+
         .qms-content {
             margin: 20rpx 0;
         }
@@ -67,44 +69,27 @@
 </style>
 <template>
     <view class="container">
-        <view class="user-info">
-            <view class="left">
-                <image src="{{ userInfo.avatarUrl }}" lazy-load="true"/>
-                <view>{{ userInfo.nickName }}</view>
+        <view class="user-info color-fff">
+            <view class="w-100 h-100">
+                <view class="left">
+                    <image src="{{ userInfo.avatarUrl }}" lazy-load="true"/>
+                    <view>{{ userInfo.nickName }}</view>
+                </view>
             </view>
         </view>
-        
-        <view class="block">
-            <view class="menu-block">
-                <view class="menu">
+
+        <view class="block bg-ff">
+            <view class="menu-block" wx:for="{{ menuData }}" wx:for-item="menuItem" wx:key="index">
+                <view class="menu" hover-class="bg-fa" wx:for="{{ menuItem }}" wx:for-index="i" wx:key="i" @tap="handleMenu({{item}})">
                     <view class="icon"></view>
-                    <text class="name">油耗记录</text>
+                    <text class="name">{{ item.name }}</text>
                 </view>
-                <view class="menu">
-                    <view class="icon"></view>
-                    <text class="name">停车计费</text>
-                </view>
-                <view class="menu">
-                    <view class="icon"></view>
-                    <text class="name">罚单记录</text>
-                </view>
-            </view>
-            <view class="menu-block">
-                <view class="menu">
-                    <view class="icon"></view>
-                    <text class="name">车与故事</text>
-                </view>
-                <view class="menu">
-                    <view class="icon"></view>
-                    <text class="name">秋名山</text>
-                </view>
-                <view class="menu"></view>
             </view>
         </view>
 
         <panel>
             <view class="title" slot="title">秋名山</view>
-            
+
             <view class="qms">
                 <view class="qms-top flex-center-between">
                     <view class="avatar-info">
@@ -116,12 +101,12 @@
                     </view>
                     <view class="font-12 color-999">2017/01/01 18:11</view>
                 </view>
-                
+
                 <view class="qms-content">
                     <text>用一句话来描述此刻的心情~</text>
                 </view>
             </view>
-    
+
             <view class="qms">
                 <view class="qms-top flex-center-between">
                     <view class="avatar-info">
@@ -133,7 +118,7 @@
                     </view>
                     <view class="font-12 color-999">2017/01/01 18:11</view>
                 </view>
-        
+
                 <view class="qms-content">
                     <text>用一句话来描述此刻的心情~</text>
                 </view>
@@ -155,21 +140,23 @@
         config = {
             navigationBarTitleText: '爵唯'
         }
+
         components = {
             panel: Panel,
-            //counter1: Counter,
-            //counter2: Counter,
-            //list: List,
-            //group: Group,
             toast: Toast
         }
 
         // mixins = [testMixin]
 
         data = {
+            banner: '../libs/image/banner.png',
             userInfo: {
                 nickName: '加载中...'
-            }
+            },
+            menuData: [
+                [{ icon: '', name: '油耗记录', url: 'oilRecord' }, { icon: '', name: '停车计费' }, { icon: '', name: '罚单记录' }],
+                [{ icon: '', name: '秋名山' }, { icon: '', name: '车与故事' }, { icon: '', name: '密码箱' }]
+            ]
         }
 
         computed = {
@@ -179,8 +166,8 @@
         }
 
         methods = {
-            plus () {
-                this.mynum++
+            handleMenu (item) {
+                wx.navigateTo({ url: item.url + `?name=${item.name}` })
             },
             toast () {
                 let promise = this.$invoke('toast', 'show', {

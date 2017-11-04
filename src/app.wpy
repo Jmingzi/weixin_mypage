@@ -1,4 +1,6 @@
 <style lang="less">
+    @import "./libs/global.wxss";
+
     .container {
         height: 100%;
         display: flex;
@@ -8,15 +10,6 @@
         background-color: #f5f5f5;
         font-size: 14px;
     }
-    .flex-center-between {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .color-999 { color: #999; }
-    .color-666 { color: #666; }
-    .font-12 { font-size: 12px; }
-    .m-l20 { margin-left: 20rpx; }
 </style>
 
 <script>
@@ -27,7 +20,8 @@
     export default class extends wepy.app {
         config = {
             pages: [
-                'pages/index'
+                'pages/index',
+                'pages/oilRecord'
             ],
             window: {
                 backgroundTextStyle: 'light',
