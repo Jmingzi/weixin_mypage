@@ -36,16 +36,6 @@
                 navigationBarTextStyle: 'white',
                 enablePullDownRefresh: true
             },
-//            tabBar: {
-//                color: '#666666',
-//                selectedColor: '#FC9153',
-//                backgroundColor: '#ffffff',
-//                list: [
-//                    {
-//                        text: ''
-//                    }
-//                ]
-//            }
         }
 
         globalData = {
