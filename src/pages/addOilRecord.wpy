@@ -1,0 +1,208 @@
+<style lang="less">
+    .input {
+        display: flex;
+        align-items: center;
+        line-height: 100rpx;
+        background-color: #fff;
+        border-bottom: 1rpx #cecece solid;
+        position: relative;
+    }
+    .label {
+        width: 200rpx;
+        padding-right:20rpx;
+        text-align: right;
+    }
+    .remark {
+        position:absolute;
+        right:20rpx;
+        color: #ccc;
+        width:50rpx;
+    }
+    .submit-btn {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 30rpx;
+    }
+</style>
+
+<template>
+    <view class="container">
+        <picker mode="date" value="{{oilDate}}" bindchange="bindDateChange">
+            <view class="input">
+                <view class="label">加油日期</view>
+                <view>{{oilDate}}</view>
+                <text class="remark iconfont">&#xe621;</text>
+            </view>
+        </picker>
+        
+        <view class="input">
+            <view class="label"><text class="color-red">*</text> 表显里程</view>
+            <input type="number" maxlength="10" value="{{oilKm}}" data-field="oilKm" bindinput="changeValue"/>
+            <text class="remark">km</text>
+        </view>
+    
+        <view class="input">
+            <view class="label"><text class="color-red">*</text> 金额</view>
+            <input type="digit" maxlength="10" value="{{oilMoney}}" data-field="oilMoney" bindinput="changeValue"/>
+            <text class="remark">元</text>
+        </view>
+    
+        <view class="input">
+            <view class="label"><text class="color-red">*</text> 单价</view>
+            <input type="digit" maxlength="10" value="{{oilUnit}}" data-field="oilUnit" bindinput="changeValue"/>
+            <text class="remark">元/L</text>
+        </view>
+    
+        <view class="input">
+            <view class="label"><text class="color-red">*</text> 油量</view>
+            <input type="digit" maxlength="10" value="{{oilL}}" data-field="oilL" bindinput="changeValue"/>
+            <text class="remark">L</text>
+        </view>
+    
+        <picker bindchange="setOilType" value="{{oilTypeValueIndex}}" range="{{oilType}}">
+            <view class="input">
+                <view class="label">标号</view>
+                <view class="">{{oilType[oilTypeValueIndex]}}</view>
+                <text class="remark iconfont">&#xe621;</text>
+            </view>
+        </picker>
+        
+    
+        <view class="input" @tap="locate">
+            <view class="label"><text class="color-red">*</text> 加油站</view>
+            <view class="w-400 t-o">{{ oilAddress ? oilAddress.name : '' }}</view>
+            <text class="remark iconfont">&#xe621;</text>
+        </view>
+    
+        <view class="t-c bg-ff">
+            <view class="btn btn-main submit-btn p-a bg-main color-fff" hover-class="h-bg-main-f" @tap="submit">
+                <text class="iconfont">&#xe620;</text>
+                <text>保存提交</text>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import 'wepy-async-function'
+    import DB from '../libs/db'
+    import utils from '../libs/utils'
+
+    export default class AddOilRecord extends wepy.page {
+        config = {
+            navigationBarTitleText: '添加油耗记录'
+        }
+    
+        data = {
+            oilDate: '',
+            oilType: ['92号汽油', '95号汽油', '97号汽油'],
+            oilTypeValueIndex: 0,
+            oilKm: '',
+            oilMoney: '',
+            oilUnit: '',
+            oilL: '',
+            oilAddress: null
+        }
+    
+        onLoad() {
+            this.oilDate = this.now
+        }
+    
+        computed = {
+            formData () {
+                return Object.assign({
+                    dataType: 'oil',
+                    oilDate: this.oilDate,
+                    oilType: this.oilType[this.oilTypeValueIndex],
+                    oilKm: this.oilKm,
+                    oilMoney: this.oilMoney,
+                    oilUnit: this.oilUnit,
+                    oilL: this.oilL,
+                    oilAddress: this.oilAddress
+                }, DB.commonField())
+            },
+            
+            now () {
+                let now = new Date()
+                return `${now.getFullYear()}年${now.getMonth()}月${now.getDate()}日`
+            }
+        }
+    
+        methods = {
+            changeValue (e) {
+                this[e.target.dataset.field] = e.detail.value
+            },
+            
+            bindDateChange (e) {
+                this.oilDate = e.detail.value
+            },
+    
+            setOilType (e) {
+                this.oilTypeValueIndex = e.detail.value
+            },
+            
+            locate () {
+                const self = this
+                wx.chooseLocation({
+                    success (res) {
+                        if (!res.name) {
+                            utils.modal({ content: '请选择一个地点' })
+                            return
+                        }
+    
+                        self.oilAddress = res
+                        self.$apply()
+                    }
+                })
+            },
+    
+            validate (data) {
+                if (!data.oilKm) {
+                    utils.modal({ content: '请填写表显里程' })
+                    return false
+                }
+                if (!data.oilMoney) {
+                    utils.modal({ content: '请填写金额' })
+                    return false
+                }
+                if (!data.oilUnit) {
+                    utils.modal({ content: '请填写单价' })
+                    return false
+                }
+                if (!data.oilL) {
+                    utils.modal({ content: '请填写油量' })
+                    return false
+                }
+                if (!data.oilAddress) {
+                    utils.modal({ content: '请选择加油站' })
+                    return false
+                }
+                
+                return true
+            },
+    
+            submit () {
+                const data = this.formData
+                
+                if (!this.methods.validate(data)) {
+                    return
+                }
+    
+                const dbContent = DB.setTableContent()
+                Object.keys(data).forEach(field => {
+                    dbContent.set(field, data[field])
+                })
+    
+                dbContent.save().then(function (todo) {
+                    utils.toast().then(() => {
+                        wx.navigateBack()
+                    })
+                }, function (error) {
+                    console.log(error)
+                    utils.toast(`保存失败:${error.message}`, 'loading')
+                })
+            }
+        }
+    }
+</script>

@@ -1,25 +1,90 @@
 <style lang="less">
-
+    .top-option {
+        height: 140rpx;
+    }
+    .scroll-wrap {
+        top: 140rpx;
+        
+        .locate-info {
+            font-size:12px;
+            color:#ccc;
+            padding-top:20rpx;
+        }
+    }
 </style>
 
 <template>
-    <view class="container">
-
+    <view class="container p-r">
+        <view class="top-option p-a w-100 l-0 t-0 t-c">
+            <view class="btn btn-main m-tb20" hover-class="h-bg-main" @tap="addOil()">
+                <text><text class="iconfont">&#xe60f;</text> 添加油耗记录</text>
+            </view>
+        </view>
+        
+        <view class="scroll-wrap p-a w-100 l-0">
+            <scroll-view class="scroll-view_H h-100" scroll-y="{{true}}">
+                <view class="block bg-ff bd-b p-20" wx:for="{{ list }}" wx:key="{{ item.id }}">
+                    <text class="block-title color-999">{{ item.oilDate }}</text>
+                    <view class="item flex-center-between">
+                        <text>{{ item.oilKm }}km</text>
+                        <text>{{ item.oilL }}L</text>
+                        <text>{{ item.oilUnit }}元/L</text>
+                        <text>{{ item.oilMoney }}元</text>
+                    </view>
+                    <view class="t-r locate-info">
+                        <text> {{ item.oilAddress ? item.oilAddress.name : '无' }}</text>
+                    </view>
+                </view>
+            </scroll-view>
+        </view>
     </view>
 </template>
 
 <script>
     import wepy from 'wepy'
+    import DB from '../libs/db'
+    import utils from '../libs/utils'
 
-    export default class Index extends wepy.page {
+    export default class oilRecord extends wepy.page {
         config = {
             navigationBarTitleText: ''
+        }
+        
+        data = {
+            list: []
         }
 
         onLoad = (search) => {
             wx.setNavigationBarTitle({
                 title: search.name
             })
+            
+            this.getList()
+        }
+        
+        methods = {
+            addOil () {
+                wx.navigateTo({ url: `addOilRecord` })
+            }
+        }
+        
+        getList () {
+            utils.loading()
+    
+            DB.queryBy('oil').then((res) => {
+                this.list = res.map(item => {
+                    return Object.assign({
+                        id: item.id
+                    }, item.attributes)
+                })
+                this.$apply()
+                utils.loading(true)
+            })
+        }
+    
+        onPullDownRefresh () {
+            this.getList()
+            wx.stopPullDownRefresh()
         }
     }
 </script>

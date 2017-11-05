@@ -4,25 +4,95 @@
     align-items: center;
 }
 
-.color-fff { color: #fff; }
+.flex-center-start {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.color-fff { color: #fff!important; }
 .color-999 { color: #999; }
 .color-666 { color: #666; }
+.color-ccc { color: #ccc; }
+.color-red { color: red!important; }
+.color-main { color: #FC9153; }
 
-.font-12 { font-size: 12px; }
+.font-12 { font-size: 12px!important; }
 
 .m-l20 { margin-left: 20rpx; }
 .m-tb20 { margin: 20rpx 0; }
+.m-a{ margin:0 auto; }
+.p-10 { padding:10rpx; }
+.p-20 { padding:20rpx; }
+.p-t20 { padding-top:20rpx; }
+.p-b20 { padding-bottom:20rpx; }
+.p-lr20{ padding: 0 20rpx; }
 
-.bg-ff { background-color: #fff; }
+.bg-ff { background-color: #fff!important; }
 .bg-f2 { background-color: #f2f2f2; }
 .bg-fa { background-color: #fafafa; }
+.bg-main { background:#FC9153; }
+
+.h-bg-main { background:#FC9153;color:#fff!important; }
+.h-bg-main-f { background:#fff;color:#FC9153!important; }
 
 .p-r { position: relative; }
 .p-a { position: absolute; }
 .t-0 { top: 0; }
 .l-0 { left: 0; }
 
+.t-c { text-align:center; }
+.t-r { text-align:right; }
+.t-o {
+white-space:noWrap;
+text-overflow:ellipsis;
+overflow:hidden;
+}
+
 .w-100 { width: 100%; }
+.w-400 { width:400rpx; }
 .h-100 { height: 100%; }
+.height-100 { height:100rpx; }
+.l-100 { line-height:100rpx; }
 
 .blur-10 { filter: blur(10px); }
+
+.bd-b { border-bottom: 1rpx solid #cfcfcf; }
+.bd-t { border-top: 1rpx solid #cfcfcf; }
+.bd-l { border-left: 1rpx solid #cfcfcf; }
+.bd-r { border-right: 1rpx solid #cfcfcf; }
+
+.btn {
+    display:inline-block;
+    padding: 20rpx;
+    border:1rpx #ccc solid;text-align:center;
+    border-radius:10rpx;
+}
+.btn.btn-main {
+    width:660rpx;
+    border-color: #FC9153;
+    color:#FC9153;
+}
+
+@font-face {
+  font-family: 'iconfont';  /* project id 91710 */
+  src: url('//at.alicdn.com/t/font_91710_8mea33dn7et57b9.eot');
+  src: url('//at.alicdn.com/t/font_91710_8mea33dn7et57b9.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_91710_8mea33dn7et57b9.woff') format('woff'),
+  url('//at.alicdn.com/t/font_91710_8mea33dn7et57b9.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_91710_8mea33dn7et57b9.svg#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

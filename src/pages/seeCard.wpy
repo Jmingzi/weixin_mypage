@@ -1,0 +1,85 @@
+<style lang="less">
+    .wrap {
+        border: 1px #cecece solid;
+        margin:20px;
+        border-radius:3px;
+    }
+    
+    .card-img {
+        display:block;
+        width: auto;
+        margin: 20px;
+    }
+    
+    .content {
+        font-size: 14px;
+        margin: 0 20px;
+        color: #666;
+    }
+</style>
+
+<template>
+    <view class="wrap">
+        <block wx:if="{{ detail }}">
+            <image class="card-img" mode="aspectFit" src="{{ detail.talkImg[0].url }}" @tap="previewImage({{detail.talkImg[0].url}})"/>
+        
+            <text class="content">{{ detail.talkContent }}</text>
+            
+            <view class="p-b20 t-r font-12">
+                <text class="content color-ccc">—— {{ detail.user.nickName }}</text>
+    
+                <view class="p-t10" wx:if="detail.talkAddress">
+                    <text class="content color-ccc font-12">{{ detail.talkAddress.name }}</text>
+                </view>
+            </view>
+        </block>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import DB from '../libs/db'
+    import utils from '../libs/utils'
+
+    export default class SeeCard extends wepy.page {
+        config = {
+            navigationBarTitleText: '子曰i - 心情卡片'
+        }
+        
+        data = {
+            detail: null,
+            searchId: 0
+        }
+        
+        methods = {
+            previewImage(url) {
+                wx.previewImage({
+                    current: url,
+                    urls: [url]
+                })
+            },
+        }
+    
+        onShareAppMessage () {
+            return {
+                title: this.detail.talkContent,
+                path: `/pages/seeCard?id=${this.searchId}`
+            }
+        }
+    
+        onLoad(search) {
+            utils.loading()
+            this.searchId = search.id
+            
+            DB.queryById(search.id).then(res => {
+                this.detail = res.attributes
+                this.$apply()
+                utils.loading(true)
+    
+                wx.setNavigationBarTitle({
+                    title: `${this.detail.user.nickName}的心情卡片`
+                })
+            })
+        }
+    }
+</script>
