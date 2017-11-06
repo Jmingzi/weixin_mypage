@@ -63,10 +63,10 @@ overflow:hidden;
 
 .blur-10 { filter: blur(10px); }
 
-.bd-b { border-bottom: 1rpx solid #cfcfcf; }
-.bd-t { border-top: 1rpx solid #cfcfcf; }
-.bd-l { border-left: 1rpx solid #cfcfcf; }
-.bd-r { border-right: 1rpx solid #cfcfcf; }
+.bd-b { border-bottom: 1rpx solid #f2f2f2; }
+.bd-t { border-top: 1rpx solid #f2f2f2; }
+.bd-l { border-left: 1rpx solid #f2f2f2; }
+.bd-r { border-right: 1rpx solid #f2f2f2; }
 
 .btn {
     display:inline-block;

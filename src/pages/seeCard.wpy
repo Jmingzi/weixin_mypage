@@ -1,35 +1,100 @@
 <style lang="less">
+    .font-10 { font-size: 10px; }
+    .font-14 { font-size: 14px; }
+    .p-t5 { padding-top: 5px; }
+    
     .wrap {
-        border: 1px #cecece solid;
-        margin:20px;
-        border-radius:3px;
+        bottom: 0;
     }
     
-    .card-img {
-        display:block;
-        width: auto;
-        margin: 20px;
+    .img-wrap {
+        top: 10px;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        box-shadow:0 0 3px rgba(0,0,0,.1);
+        background-color: #fafafa;
+
+        .both-wrap {
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            box-shadow:0 0 1px rgba(0,0,0,0.1);
+            background-color: #fff;
+        }
     }
     
-    .content {
-        font-size: 14px;
-        margin: 0 20px;
-        color: #666;
+    
+    .lt-height {
+        
+        &.lg-screen {
+            .card-img {
+                top: 10px;
+                bottom: 140px;
+                left: 10px;
+                right: 10px;
+            }
+        }
+    }
+    
+    .lg-height {
+        &.lg-screen {
+            .both-wrap {
+                height: 360px;
+                top: 50%;
+                margin-top: -200px;
+            }
+            .card-img {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                height: 200px;
+            }
+        }
+    }
+    
+    .con-wrap {
+        height: 130px;
+        padding-top: 10px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        
+        .content {
+            line-height:1.5;
+        }
     }
 </style>
 
 <template>
-    <view class="wrap">
+    <view class="wrap p-a w-100 l-0 t-0 bg-f2">
         <block wx:if="{{ detail }}">
-            <image class="card-img" mode="aspectFit" src="{{ detail.talkImg[0].url }}" @tap="previewImage({{detail.talkImg[0].url}})"/>
-        
-            <text class="content">{{ detail.talkContent }}</text>
-            
-            <view class="p-b20 t-r font-12">
-                <text class="content color-ccc">—— {{ detail.user.nickName }}</text>
+            <view class="img-wrap p-a {{ imgLgScreen ? 'lg-screen' : 'lt-screen' }} {{ imgWidthLgHeight ? 'lg-height' : 'lt-height' }}">
+                
+                <view class="both-wrap p-a">
     
-                <view class="p-t10" wx:if="detail.talkAddress">
-                    <text class="content color-ccc font-12">{{ detail.talkAddress.name }}</text>
+                    <view class="card-img p-a">
+                        <image class="w-100 h-100"
+                               bindload="imageLoad"
+                               mode="aspectFill"
+                               src="{{ detail.talkImg[0].url }}"
+                               @tap="previewImage({{detail.talkImg[0].url}})"/>
+                    </view>
+                    <view class="con-wrap p-a l-0">
+                        <view class="font-10 flex-center-between p-t5">
+                            <text class="color-666">{{ detail.talkSystemInfo.model }} 拍摄</text>
+                            <text class="color-666">图片来自 @{{ detail.talkIsPub ? detail.user.nickName : '匿名用户' }}</text>
+                        </view>
+                        <view class="font-14 content p-t5">
+                            <text>{{ detail.talkContent }}</text>
+                        </view>
+        
+                        <view class="p-t10 font-10" wx:if="detail.talkAddress">
+                            <text class="color-666">{{ detail.talkAddress.name }}</text>
+                        </view>
+                    </view>
+                    
                 </view>
             </view>
         </block>
@@ -48,7 +113,9 @@
         
         data = {
             detail: null,
-            searchId: 0
+            searchId: 0,
+            imageRect: null,
+            screenRect: null
         }
         
         methods = {
@@ -57,7 +124,30 @@
                     current: url,
                     urls: [url]
                 })
+            }
+        }
+        
+        computed = {
+            imgLgScreen () {
+                if (this.imageRect && this.screenRect) {
+                    return this.imageRect.width > this.screenRect.width ||
+                            this.imageRect.height > this.screenRect.height
+                } else {
+                    return false
+                }
             },
+            
+            imgWidthLgHeight () {
+                if (this.imageRect) {
+                    return this.imageRect.width > this.imageRect.height
+                } else {
+                    return false
+                }
+            }
+        }
+    
+        imageLoad (e) {
+            this.imageRect = e.detail
         }
     
         onShareAppMessage () {
@@ -68,17 +158,29 @@
         }
     
         onLoad(search) {
+            const self = this
+            
             utils.loading()
             this.searchId = search.id
             
             DB.queryById(search.id).then(res => {
-                this.detail = res.attributes
-                this.$apply()
+                self.detail = res.attributes
+                self.$apply()
                 utils.loading(true)
     
                 wx.setNavigationBarTitle({
-                    title: `${this.detail.user.nickName}的心情卡片`
+                    title: `${this.detail.talkIsPub ? this.detail.user.nickName : '匿名用户'}的心情卡片`
                 })
+            })
+    
+            wx.getSystemInfo({
+                success (res) {
+                    self.screenRect = {
+                        height: res.screenHeight,
+                        width: res.screenWidth
+                    }
+                    self.$apply()
+                }
             })
         }
     }

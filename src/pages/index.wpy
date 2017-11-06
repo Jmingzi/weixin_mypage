@@ -52,7 +52,7 @@
     .qms {
         background-color: #fff;
         padding: 20rpx 30rpx;
-        margin-bottom: 20rpx;
+        margin-bottom: 20px;
 
         .qms-image {
             width: 60rpx;
@@ -65,6 +65,7 @@
         }
 
         .qms-content {
+            padding-top:10px;
             margin: 20rpx 0;
             word-break: break-all;
             
@@ -76,6 +77,10 @@
             height:150px !important;
             margin-top: 20rpx;
         }
+    }
+    
+    .no-more {
+        padding:10px 0 30px 0
     }
 </style>
 <template>
@@ -106,12 +111,15 @@
         </view>
 
         <panel>
-            <view class="title" slot="title">子曰i动态</view>
+            <view class="title" slot="title">心邮</view>
 
             <view class="qms" wx:for="{{ tableContentList }}">
                 <view class="qms-top flex-center-between">
                     <view class="avatar-info">
-                        <image class="qms-image" src="{{ item.user ? item.user.avatarUrl : '' }}" lazy-load="true"/>
+                        <image class="qms-image"
+                               src="{{ item.user && item.talkIsPub ? item.user.avatarUrl : '../libs/image/default.png' }}"
+                               lazy-load="true"/>
+                        
                         <view class="m-l20">
                             <view>{{ item.user && item.talkIsPub ? item.user.nickName : '匿名用户' }}</view>
                             <view class="color-999 font-12">
@@ -126,7 +134,11 @@
                 <view class="qms-content {{ item.talkAddress ? 'bd-b' : '' }}">
                     <text>{{ item.talkContent }}</text>
                     
-                    <image wx:if="{{ item.talkImg.length > 0 }}" mode="center" class="w-100 qms-img" src="{{ item.talkImg[0].thumbUrl }}" @tap="previewImage({{index}})"/>
+                    <image wx:if="{{ item.talkImg.length > 0 }}"
+                           mode="aspectFill"
+                           class="w-100 qms-img"
+                           src="{{ item.talkImg[0].url }}"
+                           @tap="previewImage({{index}})"/>
                 </view>
                 
                 <view class="p-b20" wx:if="{{ item.talkAddress }}">
@@ -134,11 +146,16 @@
                 </view>
             
                 <view wx:if="{{ item.talkIsCard }}" class="bd-t p-t20 t-r" @tap="seeCard({{index}})">
-                    <text class="font-12 color-ccc">点击查看精美卡片</text>
+                    <text class="font-12 color-ccc">查看Ta的心情卡片</text>
+                    <!--<text class="iconfont font-12">&#xe642;</text>-->
                     <text class="font-12 iconfont color-ccc">&#xe621;</text>
                 </view>
             </view>
         </panel>
+        
+        <view class="t-c font-12 no-more" wx:if="{{ noMoreData }}">
+            <text class="color-999">没有更多数据了</text>
+        </view>
     </view>
 </template>
 
@@ -171,8 +188,10 @@
                     //{ icon: 6, name: '关于', color:'#4990FA' }
                 ]
             ],
-            
-            tableContentList: []
+            tableContentList: [],
+            currentPageIndex: 1,
+            loading: false,
+            noMoreData: false
         }
 
         computed = {
@@ -203,11 +222,8 @@
     
         onShareAppMessage () {
             return {
-                title: '子曰i，你说人活着是为了什么',
-                path: '/pages/index',
-                success (res) {
-                    console.log(res)
-                }
+                title: '子曰i，活着就是为了最美好的明天',
+                path: '/pages/index'
             }
         }
     
@@ -216,21 +232,52 @@
             wx.stopPullDownRefresh()
         }
     
+        onReachBottom () {
+            if (!this.loading && !this.noMoreData) {
+                this.loading = true
+                this.getList()
+            }
+        }
+    
         formatTime (dateObj) {
-            return `${dateObj.getFullYear()}/${dateObj.getMonth()+1}/${dateObj.getDate()} ${dateObj.getHours()}:${dateObj.getMinutes()}`
+            let time = dateObj.getTime()
+            let nowObj = new Date()
+            let now = new Date(`${nowObj.getFullYear()}/${nowObj.getMonth()+1}/${nowObj.getDate()} 00:00:00`).getTime()
+            
+            if (time > now) {
+                return `今天 ${dateObj.getHours()}:${dateObj.getMinutes()}`
+            } else if (time > now - 24*60*60*1000) {
+                return `昨天 ${dateObj.getHours()}:${dateObj.getMinutes()}`
+            } else if (time > now - 24*60*60*1000 * 2) {
+                return `前天 ${dateObj.getHours()}:${dateObj.getMinutes()}`
+            } else {
+                return `${dateObj.getFullYear()}/${dateObj.getMonth()+1}/${dateObj.getDate()} ${dateObj.getHours()}:${dateObj.getMinutes()}`
+            }
         }
         
         getList () {
             utils.loading()
+            
+            let lastCreateTime = this.tableContentList.length > 0
+                ? this.tableContentList[this.tableContentList.length - 1].originCreatedAt
+                : new Date()
+            
+            DB.queryBy('talk', false, 5, lastCreateTime).then((res) => {
+                res = res.filter(x => x.createdAt.getTime() !== lastCreateTime.getTime())
     
-            DB.queryBy('talk', false).then((res) => {
-                // console.log(res)
-                this.tableContentList = res.map(item => {
+                this.tableContentList = this.tableContentList.concat(res.map(item => {
                     return Object.assign({
                         id: item.id,
-                        createdAt: this.formatTime(item.createdAt)
+                        createdAt: this.formatTime(item.createdAt),
+                        originCreatedAt: item.createdAt
                     }, item.attributes)
-                })
+                }))
+                
+                if (res.length === 0) {
+                    this.noMoreData = true
+                }
+                
+                this.loading = false
                 this.$apply()
                 utils.loading(true)
             })

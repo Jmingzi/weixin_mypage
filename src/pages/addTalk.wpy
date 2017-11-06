@@ -41,6 +41,7 @@
         <view class="input-area bd-b">
             <textarea bindinput="inputChange"
                       value="{{ text }}"
+                      maxlength="60"
                       placeholder="说点什么吧..." />
             
             <view class="flex-center-start">
@@ -103,8 +104,8 @@
             img: [],
             address: null,
             isPub: true,
-            isCard: true,
-            systemInfo: null
+            isCard: false,
+            systemInfo: null,
         }
     
         onLoad = () => {
@@ -113,7 +114,11 @@
             utils.loading()
             wx.getSystemInfo({
                 success (res) {
-                    self.systemInfo = { model: res.model }
+                    // self.systemInfo = { model: res.model }
+                    res.model2 = res.model
+                    self.systemInfo = Object.assign(res, {
+                        model: `${res.brand} ${res.version.split('.')[0]}`
+                    })
                     self.$apply()
                     
                     utils.loading(true)

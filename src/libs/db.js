@@ -20,7 +20,7 @@ export default {
         }
     },
     
-    queryBy (dataType, isOwn = true) {
+    queryBy (dataType, isOwn = true, limit, limitCondition) {
         let queryContent
         let queryContent2
         let query
@@ -39,6 +39,11 @@ export default {
         
         if (dataType && isOwn) {
             query = AV.Query.and(queryContent, queryContent2)
+        }
+        
+        if (limit) {
+            query.lessThanOrEqualTo('createdAt', limitCondition)
+            query.limit(limit)
         }
     
         query.descending('createdAt')
