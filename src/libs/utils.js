@@ -1,10 +1,10 @@
 export default {
-    toast (title = '保存成功', icon = 'success') {
+    toast (title = '保存成功', icon = 'success', duration = 2000) {
         return new Promise((resolve, reject) => {
             wx.showToast({
                 title,
                 icon,
-                duration: 2000,
+                duration,
                 mask: true,
                 success () {
                     setTimeout(() => {

@@ -1,0 +1,71 @@
+<style lang="less">
+    .mask {
+        position: fixed;
+        top:0;
+        right:0;
+        bottom:0;
+        left:0;
+        background-color: rgba(0,0,0,.5);
+    }
+    
+    .input-area {
+        bottom: 0;
+        height: 50px;
+        
+        input {
+            height: 30px;
+            background-color: #eee;
+            border-radius: 2px;
+            margin:10px 20px;
+            padding:0 10px;
+        }
+    }
+</style>
+
+<template>
+    <view class="mask" @tap="clickMask" catchtouchmove="handleMove">
+        <view class="input-area p-a w-100 bg-ff" catchtap="handleTap">
+            <input type="text"
+                   placeholder="{{ replayName ? '回复' + replayName : '评论' }}:"
+                   maxlength="60"
+                   auto-focus
+                   confirm-type="send"
+                   bindconfirm="submit" />
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import DB from '../libs/db'
+
+    export default class Comment extends wepy.component {
+        data = {
+            replayName: ''
+        }
+        
+        events = {
+            'current-item': (item) => {
+                if (DB.openid !== item.openid) {
+                    this.replayName = item.user.nickName
+                }
+            }
+        }
+        
+        methods = {
+            submit (e) {
+                // console.log(e)
+                this.$emit('comment-confirm', e.detail.value)
+            },
+            clickMask () {
+                this.$emit('hide-comment')
+            },
+            handleTap () {
+                // console.log(e)
+            },
+            handleMove (e) {
+                // console.log(e)
+            }
+        }
+    }
+</script>

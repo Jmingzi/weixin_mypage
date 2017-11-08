@@ -13,6 +13,11 @@ export default {
         return new Content()
     },
     
+    setComment () {
+        const Comment = AV.Object.extend('comment')
+        return new Comment()
+    },
+    
     commonField () {
         return {
             user: this.user,
@@ -52,5 +57,11 @@ export default {
     
     queryById (id) {
         return new AV.Query('content').get(id)
+    },
+    
+    queryByArray (arr) {
+        arr = arr.map(id => '"' + id + '"')
+        let sql = 'select * from comment where contentId in (' + arr.join(',') + ')'
+        return AV.Query.doCloudQuery(sql)
     }
 }

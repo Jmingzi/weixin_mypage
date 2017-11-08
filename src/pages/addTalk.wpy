@@ -67,12 +67,12 @@
         </view>
     
         <view class="flex-center-between bd-b l-100 p-lr20">
-            <text>是否公开昵称</text>
+            <text>公开昵称</text>
             <switch checked="{{ isPub }}" color="#FC9153" data-field="isPub" bindchange="switchChange"/>
         </view>
     
         <view class="flex-center-between bd-b l-100 p-lr20">
-            <text>是否制作成图文卡片</text>
+            <text>心情特写</text>
             <switch checked="{{ isCard }}" data-field="isCard" color="#FC9153" bindchange="switchChange"/>
         </view>
     

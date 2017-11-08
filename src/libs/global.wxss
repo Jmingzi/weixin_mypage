@@ -16,10 +16,17 @@
     align-items: center;
 }
 
+.flex-center-end {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
 .color-fff { color: #fff!important; }
 .color-999 { color: #999; }
 .color-666 { color: #666; }
 .color-ccc { color: #ccc; }
+.color-aaa{ color: #aaa; }
 .color-red { color: red!important; }
 .color-main { color: #FC9153; }
 

@@ -82,6 +82,24 @@
     .no-more {
         padding:10px 0 30px 0
     }
+    
+    .tag-area {
+        padding:0 10px;
+        
+        .comment-tag {
+            width: 16px;
+            height: 16px;
+        }
+    }
+    
+    .color-blue {
+        color: #22a7f0;
+    }
+    
+    .comment-content-wrap {
+        margin-top:10px;
+        padding:5px;
+    }
 </style>
 <template>
     <view class="container">
@@ -98,7 +116,7 @@
             <view class="menu-block flex-center-start" wx:for="{{ menuData }}" wx:for-item="menuItem" wx:key="index">
                 <view class="menu" hover-class="bg-fa" wx:for="{{ menuItem }}" wx:for-index="i" wx:key="i" @tap="handleMenu({{item}})">
                     <view class="icon">
-                        <text style="color:{{ item.color }}" class="iconfont" wx:if="{{ item.icon === 1 }}">&#xe65f;</text>
+                        <text style="color:{{ item.color }}" class="iconfont" wx:if="{{ item.icon === 1 }}">&#xe642;</text>
                         <text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 2 }}">&#xe62c;</text>
                         <text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 3 }}">&#xe626;</text>
                         <text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 4 }}">&#xe60c;</text>
@@ -111,7 +129,7 @@
         </view>
 
         <panel>
-            <view class="title" slot="title">心邮</view>
+            <view class="title" slot="title">心情邮件</view>
 
             <view class="qms" wx:for="{{ tableContentList }}">
                 <view class="qms-top flex-center-between">
@@ -135,9 +153,9 @@
                     <text>{{ item.talkContent }}</text>
                     
                     <image wx:if="{{ item.talkImg.length > 0 }}"
-                           mode="aspectFill"
+                           mode="aspectFit"
                            class="w-100 qms-img"
-                           src="{{ item.talkImg[0].url }}"
+                           src="{{ item.talkImg[0].thumbUrl }}"
                            @tap="previewImage({{index}})"/>
                 </view>
                 
@@ -145,10 +163,35 @@
                     <text class="font-12 color-ccc">{{ item.talkAddress.name }}</text>
                 </view>
             
-                <view wx:if="{{ item.talkIsCard }}" class="bd-t p-t20 t-r" @tap="seeCard({{index}})">
-                    <text class="font-12 color-ccc">查看Ta的心情卡片</text>
-                    <!--<text class="iconfont font-12">&#xe642;</text>-->
-                    <text class="font-12 iconfont color-ccc">&#xe621;</text>
+                <view class="bd-t p-t20 flex-center-end">
+                    <view wx:if="{{ item.talkIsCard }}" hover-class="bg-f2" @tap="seeCard({{index}})">
+                        <text class="iconfont font-14 color-aaa">&#xe642;</text>
+                    </view>
+                    <view wx:else></view>
+                    <view class="flex-center tag-area" hover-class="bg-f2" @tap="clickCommentTag({{ index }})">
+                        <image class="comment-tag" src="../libs/image/comment.png"/>
+                    </view>
+                </view>
+                
+                <!--评论-->
+                <view class="bg-f2 comment-content-wrap font-12" wx:if="{{ item.comments.length > 0 }}">
+                    <view class="flex-center-start"
+                          wx:for="{{ item.comments }}"
+                          wx:for-item="cItem"
+                          wx:for-index="cIndex">
+                        
+                        <view wx:if="{{cItem.fUser.openid === item.openid}}">
+                            <text class="color-blue" hover-class="bg-f2" @tap="reComment({{cItem.fUser}}, {{index}})">{{cItem.fUser.name}}</text>
+                        </view>
+                        <view wx:elif>
+                            <text class="color-blue" hover-class="bg-f2" @tap="reComment({{cItem.fUser}}, {{index}})">{{cItem.fUser.name}}</text>
+                            <text class="color-666">回复</text>
+                            <text class="color-blue" hover-class="bg-f2" @tap="reComment({{cItem.tUser}}, {{index}})">{{cItem.tUser.name}}</text>
+                        </view>
+                        <view>
+                            <text class="color-666">：{{ cItem.content }}</text>
+                        </view>
+                    </view>
                 </view>
             </view>
         </panel>
@@ -156,6 +199,11 @@
         <view class="t-c font-12 no-more" wx:if="{{ noMoreData }}">
             <text class="color-999">没有更多数据了</text>
         </view>
+        
+        <block wx:if="{{ currentItem }}">
+            <comment @comment-confirm.user="commentConfirm"
+                     @hide-comment="hideComment"/>
+        </block>
     </view>
 </template>
 
@@ -164,6 +212,7 @@
     import DB from '../libs/db'
     import utils from '../libs/utils'
     import Panel from '../components/panel'
+    import Comment from '../components/comment'
 
     export default class Index extends wepy.page {
         config = {
@@ -171,15 +220,16 @@
         }
     
         components = {
-            panel: Panel
+            panel: Panel,
+            comment: Comment
         }
 
         data = {
             userInfo: DB.user ? DB.user : { nickName: '加载中...' },
             menuData: [
                 [
-                    { icon: 1, name: '即时心情', url: 'addTalk', color: '#FF9258' },
-                    { icon: 4, name: '油耗记录', url: 'oilRecord', color: '#05BA96' },
+                    { icon: 1, name: '寄心情', url: 'addTalk', color: '#FF9258' },
+                    //{ icon: 4, name: '油耗记录', url: 'oilRecord', color: '#05BA96' },
                     //{ icon: 2, name: '我与故事', color: '#4990FA' },
                     //{ icon: 3, name: '阶段计划', color: '#40CFD0' }
                     ],
@@ -191,7 +241,15 @@
             tableContentList: [],
             currentPageIndex: 1,
             loading: false,
-            noMoreData: false
+            noMoreData: false,
+            currentItem: null,
+            //comments: []
+        }
+        
+        events = {
+            'hide-comment': () => {
+                this.currentItem = null
+            }
         }
 
         computed = {
@@ -217,17 +275,81 @@
     
             seeCard(index) {
                 wx.navigateTo({ url: `seeCard?id=${this.tableContentList[index].id}` })
+            },
+            
+            commentConfirm (commentVal, $event) {
+                if (!commentVal.trim()) {
+                    return
+                }
+                
+                let commentData = {
+                    contentId: this.currentItem.id,
+                    fUser: {
+                        openid: DB.openid,
+                        name: DB.user.nickName
+                    },
+                    tUser: {
+                        openid: this.currentItem.openid,
+                        name: this.currentItem.user.nickName
+                    },
+                    content: commentVal
+                }
+                //console.log(commentData)
+                //return
+                this.currentItem = null
+                
+                utils.loading()
+                
+                const comment = DB.setComment()
+                Object.keys(commentData).forEach(key => {
+                    comment.set(key, commentData[key])
+                })
+    
+                comment.save().then(res => {
+                    utils.loading(true)
+                    
+                    let index = this.tableContentList.findIndex(x => x.id === commentData.contentId)
+                    let comment = Object.assign({objectId: res.id}, res.attributes)
+                    console.log(commentData.contentId, index)
+                    
+                    if (this.tableContentList[index].comments) {
+                        this.tableContentList[index].comments.push(comment)
+                    } else {
+                        this.tableContentList[index].comments = [comment]
+                    }
+                    
+                    this.$apply()
+                })
+            },
+    
+            clickCommentTag (index) {
+                this.currentItem = this.tableContentList[index]
+                this.$broadcast('current-item', this.currentItem)
+            },
+    
+            reComment (item, index) {
+                // console.log(item.name)
+                this.currentItem = this.tableContentList[index]
+                this.$broadcast('current-item', Object.assign({user: {nickName: item.name}}, item))
+            },
+    
+            hideComment (e) {
+                console.log(e)
             }
         }
     
         onShareAppMessage () {
             return {
-                title: '子曰i，活着就是为了最美好的明天',
+                title: '子曰i(你说)，活着就是为了最美好的明天',
                 path: '/pages/index'
             }
         }
     
         onPullDownRefresh () {
+            this.tableContentList = []
+            this.noMoreData = false
+            this.currentItem = null
+            
             this.getList()
             wx.stopPullDownRefresh()
         }
@@ -275,12 +397,32 @@
                 
                 if (res.length === 0) {
                     this.noMoreData = true
+                } else {
+                    // 拉取评论
+                    this.getComment(res.map(item => item.id), lastCreateTime)
                 }
                 
                 this.loading = false
                 this.$apply()
                 utils.loading(true)
             })
+        }
+    
+        getComment (contentIds, lastCreateTime) {
+            if (contentIds.length > 0) {
+                DB.queryByArray(contentIds).then(res => {
+                    let index = this.tableContentList.findIndex(x => x.originCreatedAt === lastCreateTime)
+    
+                    this.tableContentList.forEach((item, i) => {
+                        if (i > index) {
+                            item.comments = res.results.filter(x => x.attributes.contentId === item.id)
+                        }
+                    })
+                    
+                    // console.log(this.tableContentList)
+                    this.$apply()
+                })
+            }
         }
 
         onLoad() {
