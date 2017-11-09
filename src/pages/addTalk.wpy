@@ -77,13 +77,13 @@
         </view>
     
         <view class="flex-center-between bd-b l-100 p-lr20">
-            <text>设备信息</text>
-            <text class="color-999">{{ systemInfo ? systemInfo.model : '无' }}</text>
+            <text>显示设备信息</text>
+            <switch checked="{{ isShowSystemInfo }}" data-field="isShowSystemInfo" color="#FC9153" bindchange="switchChange"/>
         </view>
     
         <view class="btn btn-main submit-btn p-a bg-main color-fff" hover-class="h-bg-main-f" @tap="submit">
-            <text class="iconfont">&#xe620;</text>
-            <text>立即发表</text>
+            <!--<text class="iconfont">&#xe620;</text>-->
+            <text>立即邮寄</text>
         </view>
     </view>
 </template>
@@ -96,7 +96,7 @@
 
     export default class addTalk extends wepy.page {
         config = {
-            navigationBarTitleText: '发表即时心情'
+            navigationBarTitleText: '寄心情'
         }
         
         data = {
@@ -105,7 +105,8 @@
             address: null,
             isPub: true,
             isCard: false,
-            systemInfo: null,
+            isShowSystemInfo: true,
+            systemInfo: null
         }
     
         onLoad = () => {
@@ -143,6 +144,7 @@
                 talkAddress: this.address,
                 talkIsPub: this.isPub,
                 talkIsCard: this.isCard,
+                talkIsShowSystemInfo: this.isShowSystemInfo,
                 talkSystemInfo: this.systemInfo,
                 dataType: 'talk'
             }, DB.commonField())
@@ -225,8 +227,12 @@
                 })
     
                 dbContent.save().then(function (todo) {
-                    utils.toast('发表成功').then(() => {
-                        wx.navigateBack()
+                    utils.toast('邮寄心情成功').then(() => {
+                        wx.setStorageSync('isAddNewTalk', 1)
+                        wx.switchTab({
+                            url: 'index'
+                        })
+                        //wx.navigateBack()
                     })
                 }, function (error) {
                     console.log(error)

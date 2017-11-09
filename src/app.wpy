@@ -27,8 +27,25 @@
                 'pages/addTalk',
                 'pages/seeCard'
             ],
+            tabBar: {
+                color: '#666666',
+                selectedColor: '#FC9153',
+                backgroundColor: '#ffffff',
+                list: [{
+                    pagePath: 'pages/index',
+                    text: '心情海',
+                    iconPath: './libs/image/yx.png',
+                    selectedIconPath: './libs/image/yx2.png'
+                },{
+                    'pagePath': 'pages/addTalk',
+                    'text': '寄心情',
+                    iconPath: './libs/image/jg.png',
+                    selectedIconPath: './libs/image/jg2.png'
+                }]
+            },
             window: {
                 backgroundTextStyle: 'light',
+                backgroundColor: '#FC9153',
                 navigationBarBackgroundColor: '#FC9153',
                 navigationBarTitleText: '子曰i',
                 navigationBarTextStyle: 'white',

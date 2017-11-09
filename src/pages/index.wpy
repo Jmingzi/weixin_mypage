@@ -53,6 +53,10 @@
         background-color: #fff;
         padding: 20rpx 30rpx;
         margin-bottom: 20px;
+        
+        &:first-child {
+            margin-top: 20px;
+        }
 
         .qms-image {
             width: 60rpx;
@@ -103,33 +107,32 @@
 </style>
 <template>
     <view class="container">
-        <view class="user-info color-fff">
-            <view class="w-100 h-100">
-                <view class="left">
-                    <image src="{{ userInfo.avatarUrl }}" lazy-load="true"/>
-                    <view>{{ userInfo.nickName }}</view>
-                </view>
-            </view>
-        </view>
+        <!--<view class="user-info color-fff">-->
+            <!--<view class="w-100 h-100">-->
+                <!--<view class="left">-->
+                    <!--<image src="{{ userInfo.avatarUrl }}" lazy-load="true"/>-->
+                    <!--<view>{{ userInfo.nickName }}</view>-->
+                <!--</view>-->
+            <!--</view>-->
+        <!--</view>-->
+        <!--<view class="block bg-ff">-->
+            <!--<view class="menu-block flex-center-start" wx:for="{{ menuData }}" wx:for-item="menuItem" wx:key="index">-->
+                <!--<view class="menu" hover-class="bg-fa" wx:for="{{ menuItem }}" wx:for-index="i" wx:key="i" @tap="handleMenu({{item}})">-->
+                    <!--<view class="icon">-->
+                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:if="{{ item.icon === 1 }}">&#xe642;</text>-->
+                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 2 }}">&#xe62c;</text>-->
+                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 3 }}">&#xe626;</text>-->
+                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 4 }}">&#xe60c;</text>-->
+                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 5 }}">&#xe682;</text>-->
+                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:else>&#xe676;</text>-->
+                    <!--</view>-->
+                    <!--<text class="name">{{ item.name }}</text>-->
+                <!--</view>-->
+            <!--</view>-->
+        <!--</view>-->
 
-        <view class="block bg-ff">
-            <view class="menu-block flex-center-start" wx:for="{{ menuData }}" wx:for-item="menuItem" wx:key="index">
-                <view class="menu" hover-class="bg-fa" wx:for="{{ menuItem }}" wx:for-index="i" wx:key="i" @tap="handleMenu({{item}})">
-                    <view class="icon">
-                        <text style="color:{{ item.color }}" class="iconfont" wx:if="{{ item.icon === 1 }}">&#xe642;</text>
-                        <text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 2 }}">&#xe62c;</text>
-                        <text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 3 }}">&#xe626;</text>
-                        <text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 4 }}">&#xe60c;</text>
-                        <text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 5 }}">&#xe682;</text>
-                        <text style="color:{{ item.color }}" class="iconfont" wx:else>&#xe676;</text>
-                    </view>
-                    <text class="name">{{ item.name }}</text>
-                </view>
-            </view>
-        </view>
-
-        <panel>
-            <view class="title" slot="title">心情邮件</view>
+        <!--<panel>-->
+            <!--<view class="title" slot="title">心情邮件</view>-->
 
             <view class="qms" wx:for="{{ tableContentList }}">
                 <view class="qms-top flex-center-between">
@@ -139,9 +142,9 @@
                                lazy-load="true"/>
                         
                         <view class="m-l20">
-                            <view>{{ item.user && item.talkIsPub ? item.user.nickName : '匿名用户' }}</view>
-                            <view class="color-999 font-12">
-                                <text class="iconfont font-12 color-ccc">&#xe6ec;</text>
+                            <view class="color-blue">{{ item.user && item.talkIsPub ? item.user.nickName : '匿名用户' }}</view>
+                            <view class="color-999 font-12" wx:if="{{ item.talkIsPub && item.talkIsShowSystemInfo }}">
+                                <!--<text class="iconfont font-12 color-ccc">&#xe6ec;</text>-->
                                 <text>{{ item.talkSystemInfo.model }}</text>
                             </view>
                         </view>
@@ -149,27 +152,30 @@
                     <view class="font-12 color-999">{{ item.createdAt }}</view>
                 </view>
 
-                <view class="qms-content {{ item.talkAddress ? 'bd-b' : '' }}">
+                <view class="qms-content">
                     <text>{{ item.talkContent }}</text>
                     
                     <image wx:if="{{ item.talkImg.length > 0 }}"
-                           mode="aspectFit"
+                           mode="aspectFill"
                            class="w-100 qms-img"
-                           src="{{ item.talkImg[0].thumbUrl }}"
+                           src="{{ item.talkImg[0].url }}"
                            @tap="previewImage({{index}})"/>
                 </view>
                 
-                <view class="p-b20" wx:if="{{ item.talkAddress }}">
-                    <text class="font-12 color-ccc">{{ item.talkAddress.name }}</text>
-                </view>
-            
-                <view class="bd-t p-t20 flex-center-end">
-                    <view wx:if="{{ item.talkIsCard }}" hover-class="bg-f2" @tap="seeCard({{index}})">
-                        <text class="iconfont font-14 color-aaa">&#xe642;</text>
+                <!--地址，评论-->
+                <view class="flex-center-between bd-t p-t20">
+                    <view wx:if="{{ item.talkAddress }}">
+                        <text class="font-12 color-ccc">{{ item.talkAddress.name }}</text>
                     </view>
                     <view wx:else></view>
-                    <view class="flex-center tag-area" hover-class="bg-f2" @tap="clickCommentTag({{ index }})">
-                        <image class="comment-tag" src="../libs/image/comment.png"/>
+                    
+                    <view class="flex-center-between">
+                        <view wx:if="{{ item.talkIsCard }}" hover-class="bg-f2" @tap="seeCard({{index}})">
+                            <text class="iconfont font-14 color-aaa">&#xe642;</text>
+                        </view>
+                        <view class="flex-center tag-area" hover-class="bg-f2" @tap="clickCommentTag({{ index }})">
+                            <image class="comment-tag" src="../libs/image/comment.png"/>
+                        </view>
                     </view>
                 </view>
                 
@@ -194,7 +200,7 @@
                     </view>
                 </view>
             </view>
-        </panel>
+        <!--</panel>-->
         
         <view class="t-c font-12 no-more" wx:if="{{ noMoreData }}">
             <text class="color-999">没有更多数据了</text>
@@ -242,8 +248,7 @@
             currentPageIndex: 1,
             loading: false,
             noMoreData: false,
-            currentItem: null,
-            //comments: []
+            currentItem: null
         }
         
         events = {
@@ -340,16 +345,13 @@
     
         onShareAppMessage () {
             return {
-                title: '子曰i(你说)，活着就是为了最美好的明天',
+                title: '子曰i，心情特写',
                 path: '/pages/index'
             }
         }
     
         onPullDownRefresh () {
-            this.tableContentList = []
-            this.noMoreData = false
-            this.currentItem = null
-            
+            this.resetData()
             this.getList()
             wx.stopPullDownRefresh()
         }
@@ -358,6 +360,29 @@
             if (!this.loading && !this.noMoreData) {
                 this.loading = true
                 this.getList()
+            }
+        }
+        
+        resetData () {
+            this.tableContentList = []
+            this.noMoreData = false
+            this.currentItem = null
+        }
+        
+        onShow () {
+            const isAddNewTalk = wx.getStorageSync('isAddNewTalk')
+            
+            if (!this.userInfo.avatarUrl) {
+                this.$parent.getUserInfo(user => {
+                    this.userInfo = user
+                    this.$apply()
+                    this.getList()
+                })
+            } else if (isAddNewTalk && isAddNewTalk === 1) {
+                console.log('reset data to get list')
+                this.resetData()
+                this.getList()
+                wx.setStorageSync('isAddNewTalk', 0)
             }
         }
     
@@ -426,12 +451,7 @@
         }
 
         onLoad() {
-            this.$parent.getUserInfo(user => {
-                this.userInfo = user
-                this.$apply()
-    
-                this.getList()
-            })
+        
         }
     }
 </script>
