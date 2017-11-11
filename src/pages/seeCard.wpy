@@ -103,12 +103,12 @@
                             <text>{{ detail.talkContent }}</text>
                         </view>
                         
-                        <view class="p-a code flex-center-between">
+                        <view class="p-a code flex-center-between" @tap="redirect">
                             <view class="font-10 color-999 t-r">
                                 <view>子曰i，心情特写</view>
                                 <view>点击查看更多</view>
                             </view>
-                            <image src="../libs/image/code.jpg" @tap="redirect"/>
+                            <image src="../libs/image/code.jpg"/>
                         </view>
                     </view>
                     
