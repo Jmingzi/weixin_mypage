@@ -33,8 +33,8 @@ export default {
                 content: opt.content || '提示内容',
                 showCancel: opt.showCancel || false,
                 confirmColor: '#FC9153',
-                success () {
-                    resolve()
+                success (res) {
+                    resolve(res)
                 },
                 fail (error) {
                     reject(error)

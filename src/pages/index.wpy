@@ -176,6 +176,9 @@
                         <view class="flex-center tag-area" hover-class="bg-f2" @tap="clickCommentTag({{ index }})">
                             <image class="comment-tag" src="../libs/image/comment.png"/>
                         </view>
+                        <view wx:if="{{ item.openid === userInfo.openid }}" hover-class="bg-f2" @tap="del({{index}})">
+                            <text class="iconfont font-14 color-aaa">&#xe660;</text>
+                        </view>
                     </view>
                 </view>
                 
@@ -232,6 +235,7 @@
 
         data = {
             userInfo: DB.user ? DB.user : { nickName: '加载中...' },
+            // openid: DB.openid,
             menuData: [
                 [
                     { icon: 1, name: '寄心情', url: 'addTalk', color: '#FF9258' },
@@ -264,6 +268,11 @@
         }
 
         methods = {
+            checkIsOwnTalk(item) {
+                console.log(item.openid)
+                return item.openid === DB.openid
+            },
+            
             handleMenu (item) {
                 wx.navigateTo({ url: item.url + `?name=${item.name}` })
             },
@@ -340,6 +349,32 @@
     
             hideComment (e) {
                 console.log(e)
+            },
+    
+            del (index) {
+                utils.modal({
+                    content: '确定要删除这条数据吗？若存在评论也会一并删除。',
+                    showCancel: true,
+                }).then((res) => {
+                    if (res.confirm) {
+                        const item = this.tableContentList[index]
+                        utils.loading()
+                        
+                        DB.delContentById(item.id).then(() => {
+                            if (item.comments && item.comments.length > 0) {
+                                // 删除评论
+                                DB.delCommentById(item.id).then(() => {
+                                    utils.loading(true)
+                                })
+                            } else {
+                                utils.loading(true)
+                            }
+                            
+                            this.tableContentList.splice(index, 1)
+                            this.$apply()
+                        })
+                    }
+                })
             }
         }
     
@@ -375,6 +410,7 @@
             if (!this.userInfo.avatarUrl) {
                 this.$parent.getUserInfo(user => {
                     this.userInfo = user
+                    
                     this.$apply()
                     this.getList()
                 })

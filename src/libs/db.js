@@ -63,5 +63,28 @@ export default {
         arr = arr.map(id => '"' + id + '"')
         let sql = 'select * from comment where contentId in (' + arr.join(',') + ')'
         return AV.Query.doCloudQuery(sql)
+    },
+    
+    delContentById (id) {
+        var talk = AV.Object.createWithoutData('content', id)
+        return talk.destroy()
+    },
+    
+    delCommentById (id) {
+        return new Promise((resolve, reject) => {
+            AV.Query.doCloudQuery('select * from comment where contentId="'+ id +'"').then(res => {
+                const Objects = res.results.map(item => {
+                    return AV.Query.doCloudQuery('delete from comment where objectId="'+ item.id +'"')
+                })
+        
+                AV.Object.saveAll(Objects).then(() => {
+                    resolve()
+                }).catch(() => {
+                    reject()
+                })
+            }).catch(() => {
+                reject()
+            })
+        })
     }
 }

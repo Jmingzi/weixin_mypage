@@ -41,7 +41,14 @@
                     'text': '寄心情',
                     iconPath: './libs/image/jg.png',
                     selectedIconPath: './libs/image/jg2.png'
-                }]
+                },
+//                    {
+//                    'pagePath': 'pages/addTalk',
+//                    'text': '我',
+//                    iconPath: './libs/image/user.png',
+//                    selectedIconPath: './libs/image/user2.png'
+//                }
+                ]
             },
             window: {
                 backgroundTextStyle: 'light',
@@ -72,7 +79,7 @@
     
                 wepy.getUserInfo({
                     success (res) {
-                        cb && cb(res.userInfo)
+                        cb && cb(Object.assign({openid: DB.openid}, res.userInfo))
                         
                         DB.user = res.userInfo
                         utils.loading(false)

@@ -97,15 +97,18 @@
                     <view class="con-wrap p-a l-0">
                         <view class="font-10 flex-center-between p-t5">
                             <text wx:if="detail.talkAddress" class="color-666">{{ detail.talkAddress.name }}</text>
-                            <text class="color-666">图片来自 @{{ detail.talkIsPub ? detail.user.nickName : '匿名用户' }}</text>
+                            <text class="color-666">心情特写来自 @{{ detail.talkIsPub ? detail.user.nickName : '匿名用户' }}</text>
                         </view>
                         <view class="font-14 content p-t5">
                             <text>{{ detail.talkContent }}</text>
                         </view>
                         
                         <view class="p-a code flex-center-between">
-                            <text class="font-10 color-999">子曰i，心情特写</text>
-                            <image src="../libs/image/code.jpg"/>
+                            <view class="font-10 color-999 t-r">
+                                <view>子曰i，心情特写</view>
+                                <view>点击查看更多</view>
+                            </view>
+                            <image src="../libs/image/code.jpg" @tap="redirect"/>
                         </view>
                     </view>
                     
@@ -122,7 +125,7 @@
 
     export default class SeeCard extends wepy.page {
         config = {
-            navigationBarTitleText: '子曰i - 心情特写'
+            navigationBarTitleText: '心情特写'
         }
         
         data = {
@@ -135,8 +138,17 @@
         methods = {
             previewImage(url) {
                 wx.previewImage({
-                    current: url,
                     urls: [url]
+                })
+            },
+    
+            redirect () {
+                wx.showActionSheet({
+                    itemList: ['发布我的心情特写', '去小程序首页'],
+                    itemColor: '#22a7f0',
+                    success (res) {
+                        wx.switchTab({url: ['addTalk', 'index'][res.tapIndex]})
+                    }
                 })
             }
         }
@@ -181,10 +193,9 @@
                 self.detail = res.attributes
                 self.$apply()
                 utils.loading(true)
-    
-                wx.setNavigationBarTitle({
-                    title: `${this.detail.talkIsPub ? this.detail.user.nickName : '匿名用户'}的心情特写`
-                })
+//                wx.setNavigationBarTitle({
+//                    title: `${this.detail.talkIsPub ? this.detail.user.nickName : '匿名用户'}的心情特写`
+//                })
             })
     
             wx.getSystemInfo({
