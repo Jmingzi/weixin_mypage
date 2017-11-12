@@ -25,6 +25,10 @@ export default {
         }
     },
     
+    getOneTalk (id) {
+        return AV.Object.createWithoutData('content', id)
+    },
+    
     queryBy (dataType, isOwn = true, limit, limitCondition) {
         let queryContent
         let queryContent2
@@ -66,8 +70,13 @@ export default {
     },
     
     delContentById (id) {
-        var talk = AV.Object.createWithoutData('content', id)
+        const talk = AV.Object.createWithoutData('content', id)
         return talk.destroy()
+    },
+    
+    delComment (id) {
+        const comment = AV.Object.createWithoutData('comment', id)
+        return comment.destroy()
     },
     
     delCommentById (id) {

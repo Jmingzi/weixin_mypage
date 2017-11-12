@@ -29,11 +29,12 @@
 .color-aaa{ color: #aaa; }
 .color-red { color: red!important; }
 .color-main { color: #FC9153; }
-
+.color-blue { color: #22a7f0; }
 .font-12 { font-size: 12px!important; }
 
 .m-l20 { margin-left: 20rpx; }
 .m-tb20 { margin: 20rpx 0; }
+.m-t20 { margin: 20rpx 0; }
 .m-a{ margin:0 auto; }
 .p-10 { padding:10rpx; }
 .p-20 { padding:20rpx; }
@@ -44,6 +45,7 @@
 .bg-ff { background-color: #fff!important; }
 .bg-f2 { background-color: #f2f2f2; }
 .bg-fa { background-color: #fafafa; }
+.bg-cc { background-color: #ccc; }
 .bg-main { background:#FC9153; }
 
 .h-bg-main { background:#FC9153;color:#fff!important; }

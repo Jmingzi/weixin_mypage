@@ -1,0 +1,68 @@
+<style lang="less">
+    .comment-content-wrap {
+        margin-top:10px;
+        padding:5px;
+    }
+</style>
+
+<template>
+    <view class="bg-f2 comment-content-wrap font-12" wx:if="{{ itemData.comments.length > 0 }}">
+        <view class="flex-center-start"
+              wx:for="{{ itemData.comments }}"
+              wx:for-item="cItem"
+              wx:for-index="cIndex">
+            
+            <view wx:if="{{cItem.fUser.openid === item.openid}}">
+                <text class="color-blue" hover-class="bg-f2" @tap="reComment({{cItem.fUser}})">{{cItem.fUser.name}}</text>
+            </view>
+            <view wx:elif>
+                <text class="color-blue" hover-class="bg-f2" @tap="reComment({{cItem.fUser}})">{{cItem.fUser.name}}</text>
+                <text class="color-666">回复</text>
+                <text class="color-blue" hover-class="bg-f2" @tap="reComment({{cItem.tUser}})">{{cItem.tUser.name}}</text>
+            </view>
+            <view>
+                <text class="color-666">：{{ cItem.content }}</text>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    
+    export default class CommentItem extends wepy.component {
+        props = {
+            itemData: {
+                type: Object,
+                coerce: function (v) {
+                    console.log(v)
+                    return v
+                },
+            },
+            itemIndex: {
+                type: Number,
+                default: -1
+            }
+        }
+        
+        data = {
+            obj: this.itemData
+        }
+    
+        watch = {
+            obj (curVal, oldVal) {
+                console.log(`旧值：${oldVal}，新值：${curVal}`)
+            }
+        }
+        
+        methods = {
+            reComment (user) {
+                console.log(user, this.itemIndex)
+            }
+        }
+        
+        onLoad () {
+            console.log('ok', this.itemData)
+        }
+    }
+</script>

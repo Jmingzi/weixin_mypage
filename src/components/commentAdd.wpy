@@ -48,6 +48,8 @@
             'current-item': (item) => {
                 if (DB.openid !== item.openid) {
                     this.replayName = item.user.nickName
+                } else {
+                    this.replayName = ''
                 }
             }
         }

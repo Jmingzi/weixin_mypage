@@ -1,54 +1,4 @@
 <style lang="less">
-    .user-info {
-        height: 160rpx;
-        padding: 30rpx 40rpx;
-        background-color: #FC9153;
-
-        .user-mask {
-            background-color: rgba(0,0,0,.3);
-        }
-    }
-    .left {
-        display: inline-block;
-        width: 150rpx;
-
-        image {
-            width: 100rpx;
-            height: 100rpx;
-            border-radius: 4rpx;
-        }
-    }
-
-    .menu-block {
-        &:first-child {
-            border-bottom: 1rpx #ededed solid;
-        }
-
-        .menu {
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            width: 33.33%;
-            padding: 30rpx 0;
-            border-right: 1rpx #ededed solid;
-        }
-        .name {
-            color: #666;
-            padding: 16rpx 0 0 0;
-        }
-        .icon {
-            width: 100rpx;
-            height: 100rpx;
-            // background-color: #eee;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .iconfont {
-            font-size: 30px;
-        }
-    }
-
     .qms {
         background-color: #fff;
         padding: 20rpx 30rpx;
@@ -95,123 +45,92 @@
             height: 16px;
         }
     }
-    
-    .color-blue {
-        color: #22a7f0;
-    }
-    
-    .comment-content-wrap {
-        margin-top:10px;
-        padding:5px;
-    }
 </style>
 <template>
     <view class="container">
-        <!--<view class="user-info color-fff">-->
-            <!--<view class="w-100 h-100">-->
-                <!--<view class="left">-->
-                    <!--<image src="{{ userInfo.avatarUrl }}" lazy-load="true"/>-->
-                    <!--<view>{{ userInfo.nickName }}</view>-->
-                <!--</view>-->
-            <!--</view>-->
-        <!--</view>-->
-        <!--<view class="block bg-ff">-->
-            <!--<view class="menu-block flex-center-start" wx:for="{{ menuData }}" wx:for-item="menuItem" wx:key="index">-->
-                <!--<view class="menu" hover-class="bg-fa" wx:for="{{ menuItem }}" wx:for-index="i" wx:key="i" @tap="handleMenu({{item}})">-->
-                    <!--<view class="icon">-->
-                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:if="{{ item.icon === 1 }}">&#xe642;</text>-->
-                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 2 }}">&#xe62c;</text>-->
-                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 3 }}">&#xe626;</text>-->
-                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 4 }}">&#xe60c;</text>-->
-                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:elif="{{ item.icon === 5 }}">&#xe682;</text>-->
-                        <!--<text style="color:{{ item.color }}" class="iconfont" wx:else>&#xe676;</text>-->
-                    <!--</view>-->
-                    <!--<text class="name">{{ item.name }}</text>-->
-                <!--</view>-->
-            <!--</view>-->
-        <!--</view>-->
-
-        <!--<panel>-->
-            <!--<view class="title" slot="title">心情邮件</view>-->
-
-            <view class="qms" wx:for="{{ tableContentList }}">
-                <view class="qms-top flex-center-between">
-                    <view class="avatar-info">
-                        <image class="qms-image"
-                               src="{{ item.user && item.talkIsPub ? item.user.avatarUrl : '../libs/image/default.png' }}"
-                               lazy-load="true"/>
-                        
-                        <view class="m-l20">
-                            <view class="color-blue">{{ item.user && item.talkIsPub ? item.user.nickName : '匿名用户' }}</view>
-                            <view class="color-999 font-12" wx:if="{{ item.talkIsPub && item.talkIsShowSystemInfo }}">
-                                <!--<text class="iconfont font-12 color-ccc">&#xe6ec;</text>-->
-                                <text>{{ item.talkSystemInfo.model }}</text>
-                            </view>
-                        </view>
-                    </view>
-                    <view class="font-12 color-999">{{ item.createdAt }}</view>
-                </view>
-
-                <view class="qms-content">
-                    <text>{{ item.talkContent }}</text>
+        <view class="qms"
+              wx:for="{{ tableContentList }}"
+              wx:for-item="item"
+              wx:key="id">
+            <view class="qms-top flex-center-between">
+                <view class="avatar-info">
+                    <image class="qms-image"
+                           src="{{ item.user && item.talkIsPub ? item.user.avatarUrl : '../libs/image/default.png' }}"
+                           lazy-load="true"/>
                     
-                    <image wx:if="{{ item.talkImg.length > 0 }}"
-                           mode="aspectFill"
-                           class="w-100 qms-img"
-                           src="{{ item.talkImg[0].url }}"
-                           @tap="previewImage({{index}})"/>
-                </view>
-                
-                <!--地址，评论-->
-                <view class="flex-center-between bd-t p-t20">
-                    <view wx:if="{{ item.talkAddress }}">
-                        <text class="font-12 color-ccc">{{ item.talkAddress.name }}</text>
-                    </view>
-                    <view wx:else></view>
-                    
-                    <view class="flex-center-between">
-                        <view wx:if="{{ item.talkIsCard }}" hover-class="bg-f2" @tap="seeCard({{index}})">
-                            <text class="iconfont font-14 color-aaa">&#xe642;</text>
-                        </view>
-                        <view class="flex-center tag-area" hover-class="bg-f2" @tap="clickCommentTag({{ index }})">
-                            <image class="comment-tag" src="../libs/image/comment.png"/>
-                        </view>
-                        <view wx:if="{{ item.openid === userInfo.openid }}" hover-class="bg-f2" @tap="del({{index}})">
-                            <text class="iconfont font-14 color-aaa">&#xe660;</text>
+                    <view class="m-l20">
+                        <view class="color-blue">{{ item.user && item.talkIsPub ? item.user.nickName : '匿名用户' }}</view>
+                        <view class="color-999 font-12" wx:if="{{ item.talkIsPub && item.talkIsShowSystemInfo }}">
+                            <!--<text class="iconfont font-12 color-ccc">&#xe6ec;</text>-->
+                            <text>{{ item.talkSystemInfo.model }}</text>
                         </view>
                     </view>
                 </view>
+                <view class="font-12 color-999">{{ item.createdAt }}</view>
+            </view>
+
+            <view class="qms-content">
+                <text>{{ item.talkContent }}</text>
                 
-                <!--评论-->
-                <view class="bg-f2 comment-content-wrap font-12" wx:if="{{ item.comments.length > 0 }}">
-                    <view class="flex-center-start"
-                          wx:for="{{ item.comments }}"
-                          wx:for-item="cItem"
-                          wx:for-index="cIndex">
-                        
-                        <view wx:if="{{cItem.fUser.openid === item.openid}}">
-                            <text class="color-blue" hover-class="bg-f2" @tap="reComment({{cItem.fUser}}, {{index}})">{{cItem.fUser.name}}</text>
-                        </view>
-                        <view wx:elif>
-                            <text class="color-blue" hover-class="bg-f2" @tap="reComment({{cItem.fUser}}, {{index}})">{{cItem.fUser.name}}</text>
-                            <text class="color-666">回复</text>
-                            <text class="color-blue" hover-class="bg-f2" @tap="reComment({{cItem.tUser}}, {{index}})">{{cItem.tUser.name}}</text>
-                        </view>
-                        <view>
-                            <text class="color-666">：{{ cItem.content }}</text>
-                        </view>
+                <image wx:if="{{ item.talkImg.length > 0 }}"
+                       mode="aspectFill"
+                       class="w-100 qms-img"
+                       src="{{ item.talkImg[0].url }}"
+                       @tap="previewImage({{index}})"/>
+            </view>
+            
+            <!--地址，评论-->
+            <view class="flex-center-between bd-t p-t20">
+                <view wx:if="{{ item.talkAddress }}">
+                    <text class="font-12 color-ccc">{{ item.talkAddress.name }}</text>
+                </view>
+                <view wx:else></view>
+                
+                <view class="flex-center-between">
+                    <view wx:if="{{ item.talkIsCard }}" hover-class="bg-f2" @tap="seeCard({{index}})">
+                        <text class="iconfont font-14 color-aaa">&#xe642;</text>
+                    </view>
+                    <view class="flex-center tag-area" hover-class="bg-f2" @tap="clickCommentTag({{ index }})">
+                        <image class="comment-tag" src="../libs/image/comment.png"/>
+                    </view>
+                    <view wx:if="{{ item.openid === userInfo.openid }}" hover-class="bg-f2" @tap="del({{index}})">
+                        <text class="iconfont font-14 color-aaa">&#xe660;</text>
                     </view>
                 </view>
             </view>
-        <!--</panel>-->
+            
+            <!--评论-->
+            <view class="bg-f2 p-10 m-t20 comment-content-wrap font-12" wx:if="{{ item.comments.length > 0 }}">
+                <view class="flex-center-start"
+                      wx:for="{{ item.comments }}"
+                      wx:key="id"
+                      wx:for-item="cItem"
+                      wx:for-index="cIndex"
+                      hover-class="bg-cc"
+                      @tap="reComment({{cItem.fUser}}, {{index}}, {{cItem}}, {{cIndex}})"
+                      @longpress="deleteComment">
+                    
+                    <view wx:if="{{cItem.tUser.openid === item.openid}}">
+                        <text class="color-blue">{{cItem.fUser.name}}</text>
+                    </view>
+                    <view wx:elif>
+                        <text class="color-blue">{{cItem.fUser.name}}</text>
+                        <text class="color-666">回复</text>
+                        <text class="color-blue">{{cItem.tUser.name}}</text>
+                    </view>
+                    <view>
+                        <text class="color-666">：{{ cItem.content }}</text>
+                    </view>
+                </view>
+            </view>
+        </view>
         
         <view class="t-c font-12 no-more" wx:if="{{ noMoreData }}">
             <text class="color-999">没有更多数据了</text>
         </view>
         
         <block wx:if="{{ currentItem }}">
-            <comment @comment-confirm.user="commentConfirm"
-                     @hide-comment="hideComment"/>
+            <comment @comment-confirm.user="commentConfirm" @hide-comment="hideComment"/>
         </block>
     </view>
 </template>
@@ -221,7 +140,8 @@
     import DB from '../libs/db'
     import utils from '../libs/utils'
     import Panel from '../components/panel'
-    import Comment from '../components/comment'
+    import Comment from '../components/commentAdd'
+    //import CommentItem from '../components/commentItem'
 
     export default class Index extends wepy.page {
         config = {
@@ -235,19 +155,6 @@
 
         data = {
             userInfo: DB.user ? DB.user : { nickName: '加载中...' },
-            // openid: DB.openid,
-            menuData: [
-                [
-                    { icon: 1, name: '寄心情', url: 'addTalk', color: '#FF9258' },
-                    //{ icon: 4, name: '油耗记录', url: 'oilRecord', color: '#05BA96' },
-                    //{ icon: 2, name: '我与故事', color: '#4990FA' },
-                    //{ icon: 3, name: '阶段计划', color: '#40CFD0' }
-                    ],
-                [
-                    //{ icon: 5, name: '密码箱', color: '#FF9258' },
-                    //{ icon: 6, name: '关于', color:'#4990FA' }
-                ]
-            ],
             tableContentList: [],
             currentPageIndex: 1,
             loading: false,
@@ -269,7 +176,6 @@
 
         methods = {
             checkIsOwnTalk(item) {
-                console.log(item.openid)
                 return item.openid === DB.openid
             },
             
@@ -291,7 +197,7 @@
                 wx.navigateTo({ url: `seeCard?id=${this.tableContentList[index].id}` })
             },
             
-            commentConfirm (commentVal, $event) {
+            commentConfirm (commentVal) {
                 if (!commentVal.trim()) {
                     return
                 }
@@ -306,12 +212,10 @@
                         openid: this.currentItem.openid,
                         name: this.currentItem.user.nickName
                     },
-                    content: commentVal
+                    content: commentVal,
+                    //contentObject: DB.getOneTalk(this.currentItem.id)
                 }
-                //console.log(commentData)
-                //return
                 this.currentItem = null
-                
                 utils.loading()
                 
                 const comment = DB.setComment()
@@ -324,7 +228,7 @@
                     
                     let index = this.tableContentList.findIndex(x => x.id === commentData.contentId)
                     let comment = Object.assign({objectId: res.id}, res.attributes)
-                    console.log(commentData.contentId, index)
+                    // console.log(commentData.contentId, index)
                     
                     if (this.tableContentList[index].comments) {
                         this.tableContentList[index].comments.push(comment)
@@ -342,13 +246,35 @@
             },
     
             reComment (item, index) {
-                // console.log(item.name)
-                this.currentItem = this.tableContentList[index]
+                this.currentItem = Object.assign(
+                    {},
+                    this.tableContentList[index],
+                    {openid: item.openid, user: {nickName: item.name}}
+                )
                 this.$broadcast('current-item', Object.assign({user: {nickName: item.name}}, item))
             },
     
             hideComment (e) {
                 console.log(e)
+            },
+    
+            deleteComment (fUser, i, item, itemIndex) {
+                if (fUser.openid !== DB.openid) {
+                    console.log('this comment is not yours')
+                    return
+                }
+                
+                utils.modal({
+                    content: '删除该条评论？',
+                    showCancel: true,
+                }).then((res) => {
+                    if (res.confirm) {
+                        DB.delComment(item.objectId).then(() => {
+                            this.tableContentList[i].comments.splice(itemIndex, 1)
+                            this.$apply()
+                        })
+                    }
+                })
             },
     
             del (index) {
@@ -420,6 +346,11 @@
                 this.getList()
                 wx.setStorageSync('isAddNewTalk', 0)
             }
+//            const queryContent = new AV.Query('content')
+//            queryContent.equalTo('dataType', dataType)
+//            queryContent.lessThanOrEqualTo('createdAt', limitCondition)
+//            queryContent.limit(2)
+//            queryContent.descending('createdAt')
         }
     
         formatTime (dateObj) {
@@ -452,7 +383,8 @@
                     return Object.assign({
                         id: item.id,
                         createdAt: this.formatTime(item.createdAt),
-                        originCreatedAt: item.createdAt
+                        originCreatedAt: item.createdAt,
+                        comments: []
                     }, item.attributes)
                 }))
                 
@@ -484,10 +416,6 @@
                     this.$apply()
                 })
             }
-        }
-
-        onLoad() {
-        
         }
     }
 </script>
