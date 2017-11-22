@@ -63,6 +63,7 @@
                         <view class="color-999 font-12" wx:if="{{ item.talkIsPub && item.talkIsShowSystemInfo }}">
                             <!--<text class="iconfont font-12 color-ccc">&#xe6ec;</text>-->
                             <text>{{ item.talkSystemInfo.model }}</text>
+                            <!--<text>{{ getModel(item.talkSystemInfo.model2) }}</text>-->
                         </view>
                     </view>
                 </view>
@@ -175,6 +176,11 @@
         }
 
         methods = {
+            getModel(model) {
+                console.log(model)
+                return model.match(/iPhone \d.*?/)[0]
+            },
+            
             checkIsOwnTalk(item) {
                 return item.openid === DB.openid
             },
@@ -346,11 +352,6 @@
                 this.getList()
                 wx.setStorageSync('isAddNewTalk', 0)
             }
-//            const queryContent = new AV.Query('content')
-//            queryContent.equalTo('dataType', dataType)
-//            queryContent.lessThanOrEqualTo('createdAt', limitCondition)
-//            queryContent.limit(2)
-//            queryContent.descending('createdAt')
         }
     
         formatTime (dateObj) {
@@ -380,6 +381,8 @@
                 res = res.filter(x => x.createdAt.getTime() !== lastCreateTime.getTime())
     
                 this.tableContentList = this.tableContentList.concat(res.map(item => {
+                    // model.match(/iPhone \d.*?/)[0]
+                    item.attributes.talkSystemInfo.model = item.attributes.talkSystemInfo.model2.match(/iPhone \d.*?/)[0]
                     return Object.assign({
                         id: item.id,
                         createdAt: this.formatTime(item.createdAt),

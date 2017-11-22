@@ -122,6 +122,7 @@
     import wepy from 'wepy'
     import DB from '../libs/db'
     import utils from '../libs/utils'
+//    import html2canvas from 'html2canvas'
 
     export default class SeeCard extends wepy.page {
         config = {
