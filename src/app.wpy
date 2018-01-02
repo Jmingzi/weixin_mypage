@@ -1,91 +1,108 @@
 <style lang="less">
-    @import "./libs/global.wxss";
+  @import "./libs/global.wxss";
 
-    .container {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-        background-color: #f5f5f5;
-        font-size: 14px;
-    }
+  scroll-view,
+  view {
+    box-sizing: border-box;
+  }
+  .container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #f2f2f2;
+    font-size: 14px;
+  }
 </style>
 
 <script>
-    import wepy from 'wepy'
-    import 'wepy-async-function'
-    import AV from './libs/av-weapp-min.js'
-    import DB from './libs/db'
-    import utils from './libs/utils'
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+  import AV from './libs/av-weapp-min.js'
+  import DB from './libs/db'
+  import utils from './libs/utils'
 
-    export default class extends wepy.app {
-        config = {
-            pages: [
-                'pages/index',
-                'pages/oilRecord',
-                'pages/addOilRecord',
-                'pages/addTalk',
-                'pages/seeCard'
-            ],
-            tabBar: {
-                color: '#666666',
-                selectedColor: '#FC9153',
-                backgroundColor: '#ffffff',
-                list: [{
-                    pagePath: 'pages/index',
-                    text: '心情海',
-                    iconPath: './libs/image/yx.png',
-                    selectedIconPath: './libs/image/yx2.png'
-                },{
-                    'pagePath': 'pages/addTalk',
-                    'text': '寄心情',
-                    iconPath: './libs/image/jg.png',
-                    selectedIconPath: './libs/image/jg2.png'
-                },
-//                    {
-//                    'pagePath': 'pages/addTalk',
-//                    'text': '我',
-//                    iconPath: './libs/image/user.png',
-//                    selectedIconPath: './libs/image/user2.png'
-//                }
-                ]
-            },
-            window: {
-                backgroundTextStyle: 'light',
-                backgroundColor: '#FC9153',
-                navigationBarBackgroundColor: '#FC9153',
-                navigationBarTitleText: '子曰i',
-                navigationBarTextStyle: 'white',
-                enablePullDownRefresh: true
-            },
-        }
-
-        constructor () {
-            super()
-            this.use('requestfix')
-        }
-
-        onLaunch() {
-            AV.init({
-                appId: 'mqdKEWLXpMLp7oMoIhofY1ed-gzGzoHsz',
-                appKey: 'snUidS3iEEm67sslz7JovM6j',
-            })
-        }
-
-        getUserInfo (cb) {
-            utils.loading()
-            AV.User.loginWithWeapp().then(user => {
-                DB.openid = user.toJSON().authData.lc_weapp.openid
-    
-                wepy.getUserInfo({
-                    success (res) {
-                        cb && cb(Object.assign({openid: DB.openid}, res.userInfo))
-                        
-                        DB.user = res.userInfo
-                        utils.loading(false)
-                    }
-                })
-            }).catch(console.error)
-        }
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/index',
+        'pages/oilRecord',
+        'pages/addOilRecord',
+        'pages/addTalk',
+        'pages/seeCard'
+      ],
+      // tabBar: {
+      //   color: '#666666',
+      //   selectedColor: '#FC9153',
+      //   backgroundColor: '#ffffff',
+      //   list: [{
+      //     pagePath: 'pages/index',
+      //     // text: '小心情',
+      //     iconPath: './libs/image/yx.png',
+      //     selectedIconPath: './libs/image/yx2.png'
+      //   },{
+      //     pagePath: 'pages/addTalk',
+      //     // 'text': '寄心情',
+      //     iconPath: './libs/image/jg.png',
+      //     selectedIconPath: './libs/image/jg2.png'
+      //   },
+      //   {
+      //    'pagePath': 'pages/addTalk',
+      //    'text': '我',
+      //    iconPath: './libs/image/user.png',
+      //    selectedIconPath: './libs/image/user2.png'
+      //   }
+      //   ]
+      // },
+      window: {
+        backgroundTextStyle: 'light',
+        backgroundColor: '#f2f2f2',
+        navigationBarBackgroundColor: '#f2f2f2',
+        navigationBarTitleText: '',
+        navigationBarTextStyle: 'black',
+        // enablePullDownRefresh: true
+      },
     }
+
+    constructor () {
+      super()
+      this.use('requestfix')
+    }
+
+    screenRect = null
+
+    onLaunch() {
+      let self = this
+
+      AV.init({
+        appId: 'mqdKEWLXpMLp7oMoIhofY1ed-gzGzoHsz',
+        appKey: 'snUidS3iEEm67sslz7JovM6j',
+      })
+
+      wx.getSystemInfo({
+        success (res) {
+          self.screenRect = {
+            height: res.screenHeight,
+            width: res.screenWidth
+          }
+        }
+      })
+    }
+
+    getUserInfo (cb) {
+      utils.loading()
+      AV.User.loginWithWeapp().then(user => {
+        DB.openid = user.toJSON().authData.lc_weapp.openid
+
+        wepy.getUserInfo({
+          success (res) {
+            cb && cb(Object.assign({openid: DB.openid}, res.userInfo))
+
+            DB.user = res.userInfo
+            utils.loading(false)
+          }
+        })
+      }).catch(console.error)
+    }
+  }
 </script>

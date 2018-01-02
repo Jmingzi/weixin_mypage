@@ -1,25 +1,25 @@
 .flex-center-between {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .flex-center-start {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .flex-center-end {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .color-fff { color: #fff!important; }
@@ -59,9 +59,9 @@
 .t-c { text-align:center; }
 .t-r { text-align:right; }
 .t-o {
-white-space:noWrap;
-text-overflow:ellipsis;
-overflow:hidden;
+  white-space:noWrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
 }
 
 .w-100 { width: 100%; }
@@ -78,15 +78,15 @@ overflow:hidden;
 .bd-r { border-right: 1rpx solid #f2f2f2; }
 
 .btn {
-    display:inline-block;
-    padding: 20rpx;
-    border:1rpx #ccc solid;text-align:center;
-    border-radius:10rpx;
+  display:inline-block;
+  padding: 20rpx;
+  border:1rpx #ccc solid;text-align:center;
+  border-radius:10rpx;
 }
 .btn.btn-main {
-    width:660rpx;
-    border-color: #FC9153;
-    color:#FC9153;
+  width:660rpx;
+  border-color: #FC9153;
+  color:#FC9153;
 }
 
 @font-face {

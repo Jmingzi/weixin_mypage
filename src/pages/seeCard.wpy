@@ -1,213 +1,213 @@
 <style lang="less">
-    .font-10 { font-size: 10px; }
-    .font-14 { font-size: 14px; }
-    .p-t5 { padding-top: 5px; }
-    
-    .wrap {
-        bottom: 0;
-    }
-    
-    .img-wrap {
-        top: 10px;
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
-        box-shadow:0 0 3px rgba(0,0,0,.1);
-        background-color: #fafafa;
+  .font-10 { font-size: 10px; }
+  .font-14 { font-size: 14px; }
+  .p-t5 { padding-top: 5px; }
 
-        .both-wrap {
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            box-shadow:0 0 1px rgba(0,0,0,0.1);
-            background-color: #fff;
-        }
+  .wrap {
+    bottom: 0;
+  }
+
+  .img-wrap {
+    top: 10px;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    box-shadow:0 0 3px rgba(0,0,0,.1);
+    background-color: #fafafa;
+
+    .both-wrap {
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      box-shadow:0 0 1px rgba(0,0,0,0.1);
+      background-color: #fff;
     }
-    
-    
-    .lt-height {
-        
-        &.lg-screen {
-            .card-img {
-                top: 10px;
-                bottom: 140px;
-                left: 10px;
-                right: 10px;
-            }
-        }
-    }
-    
-    .lg-height {
-        &.lg-screen {
-            .both-wrap {
-                height: 360px;
-                // top: 50%;
-                top: 10px;
-                // margin-top: -200px;
-            }
-            .card-img {
-                top: 10px;
-                left: 10px;
-                right: 10px;
-                height: 200px;
-            }
-        }
-    }
-    
-    .con-wrap {
-        height: 130px;
-        padding-top: 10px;
+  }
+
+
+  .lt-height {
+
+    &.lg-screen {
+      .card-img {
+        top: 10px;
+        bottom: 140px;
         left: 10px;
         right: 10px;
-        bottom: 10px;
-        
-        .content {
-            line-height:1.5;
-        }
-        
-        .code {
-            width: 125px;
-            height: 50px;
-            bottom: 0;
-            right: 0;
-            
-            image {
-                width: 50px;
-                height: 100%;
-            }
-        }
+      }
     }
+  }
+
+  .lg-height {
+    &.lg-screen {
+      .both-wrap {
+        height: 360px;
+        // top: 50%;
+        top: 10px;
+        // margin-top: -200px;
+      }
+      .card-img {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        height: 200px;
+      }
+    }
+  }
+
+  .con-wrap {
+    height: 130px;
+    padding-top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+
+    .content {
+      line-height:1.5;
+    }
+
+    .code {
+      width: 125px;
+      height: 50px;
+      bottom: 0;
+      right: 0;
+
+      image {
+        width: 50px;
+        height: 100%;
+      }
+    }
+  }
 </style>
 
 <template>
-    <view class="wrap p-a w-100 l-0 t-0 bg-f2">
-        <block wx:if="{{ detail }}">
-            <view class="img-wrap p-a {{ imgLgScreen ? 'lg-screen' : 'lt-screen' }} {{ imgWidthLgHeight ? 'lg-height' : 'lt-height' }}">
-                
-                <view class="both-wrap p-a">
-    
-                    <view class="card-img p-a">
-                        <image class="w-100 h-100"
-                               bindload="imageLoad"
-                               mode="aspectFill"
-                               src="{{ detail.talkImg[0].url }}"
-                               @tap="previewImage({{detail.talkImg[0].url}})"/>
-                    </view>
-                    <view class="con-wrap p-a l-0">
-                        <view class="font-10 flex-center-between p-t5">
-                            <text wx:if="detail.talkAddress" class="color-666">{{ detail.talkAddress.name }}</text>
-                            <text class="color-666">心情特写来自 @{{ detail.talkIsPub ? detail.user.nickName : '匿名用户' }}</text>
-                        </view>
-                        <view class="font-14 content p-t5">
-                            <text>{{ detail.talkContent }}</text>
-                        </view>
-                        
-                        <view class="p-a code flex-center-between" @tap="redirect">
-                            <view class="font-10 color-999 t-r">
-                                <view>子曰i，心情特写</view>
-                                <view>点击查看更多</view>
-                            </view>
-                            <image src="../libs/image/code.jpg"/>
-                        </view>
-                    </view>
-                    
-                </view>
+  <view class="wrap p-a w-100 l-0 t-0 bg-f2">
+    <block wx:if="{{ detail }}">
+      <view class="img-wrap p-a {{ imgLgScreen ? 'lg-screen' : 'lt-screen' }} {{ imgWidthLgHeight ? 'lg-height' : 'lt-height' }}">
+
+        <view class="both-wrap p-a">
+
+          <view class="card-img p-a">
+            <image class="w-100 h-100"
+                   bindload="imageLoad"
+                   mode="aspectFill"
+                   src="{{ detail.talkImg[0].url }}"
+                   @tap="previewImage({{detail.talkImg[0].url}})"/>
+          </view>
+          <view class="con-wrap p-a l-0">
+            <view class="font-10 flex-center-between p-t5">
+              <text wx:if="detail.talkAddress" class="color-666">{{ detail.talkAddress.name }}</text>
+              <text class="color-666">心情特写来自 @{{ detail.talkIsPub ? detail.user.nickName : '匿名用户' }}</text>
             </view>
-        </block>
-    </view>
+            <view class="font-14 content p-t5">
+              <text>{{ detail.talkContent }}</text>
+            </view>
+
+            <view class="p-a code flex-center-between" @tap="redirect">
+              <view class="font-10 color-999 t-r">
+                <view>子曰i，心情特写</view>
+                <view>点击查看更多</view>
+              </view>
+              <image src="../libs/image/code.jpg"/>
+            </view>
+          </view>
+
+        </view>
+      </view>
+    </block>
+  </view>
 </template>
 
 <script>
-    import wepy from 'wepy'
-    import DB from '../libs/db'
-    import utils from '../libs/utils'
-//    import html2canvas from 'html2canvas'
+  import wepy from 'wepy'
+  import DB from '../libs/db'
+  import utils from '../libs/utils'
+  //    import html2canvas from 'html2canvas'
 
-    export default class SeeCard extends wepy.page {
-        config = {
-            navigationBarTitleText: '心情特写'
+  export default class SeeCard extends wepy.page {
+    config = {
+      navigationBarTitleText: '小心情'
+    }
+
+    data = {
+      detail: null,
+      searchId: 0,
+      imageRect: null,
+      screenRect: null
+    }
+
+    methods = {
+      previewImage(url) {
+        wx.previewImage({
+          urls: [url]
+        })
+      },
+
+      redirect () {
+        wx.showActionSheet({
+          itemList: ['发布我的心情特写', '去小程序首页'],
+          itemColor: '#22a7f0',
+          success (res) {
+            wx.switchTab({url: ['addTalk', 'index'][res.tapIndex]})
+          }
+        })
+      }
+    }
+
+    computed = {
+      imgLgScreen () {
+        if (this.imageRect && this.screenRect) {
+          return this.imageRect.width > this.screenRect.width ||
+            this.imageRect.height > this.screenRect.height
+        } else {
+          return false
         }
-        
-        data = {
-            detail: null,
-            searchId: 0,
-            imageRect: null,
-            screenRect: null
+      },
+
+      imgWidthLgHeight () {
+        if (this.imageRect) {
+          return this.imageRect.width > this.imageRect.height
+        } else {
+          return false
         }
-        
-        methods = {
-            previewImage(url) {
-                wx.previewImage({
-                    urls: [url]
-                })
-            },
-    
-            redirect () {
-                wx.showActionSheet({
-                    itemList: ['发布我的心情特写', '去小程序首页'],
-                    itemColor: '#22a7f0',
-                    success (res) {
-                        wx.switchTab({url: ['addTalk', 'index'][res.tapIndex]})
-                    }
-                })
-            }
-        }
-        
-        computed = {
-            imgLgScreen () {
-                if (this.imageRect && this.screenRect) {
-                    return this.imageRect.width > this.screenRect.width ||
-                            this.imageRect.height > this.screenRect.height
-                } else {
-                    return false
-                }
-            },
-            
-            imgWidthLgHeight () {
-                if (this.imageRect) {
-                    return this.imageRect.width > this.imageRect.height
-                } else {
-                    return false
-                }
-            }
-        }
-    
-        imageLoad (e) {
-            this.imageRect = e.detail
-        }
-    
-        onShareAppMessage () {
-            return {
-                title: this.detail.talkContent,
-                path: `/pages/seeCard?id=${this.searchId}`
-            }
-        }
-    
-        onLoad(search) {
-            const self = this
-            
-            utils.loading()
-            this.searchId = search.id
-            
-            DB.queryById(search.id).then(res => {
-                self.detail = res.attributes
-                self.$apply()
-                utils.loading(true)
+      }
+    }
+
+    imageLoad (e) {
+      this.imageRect = e.detail
+    }
+
+    onShareAppMessage () {
+      return {
+        title: this.detail.talkContent,
+        path: `/pages/seeCard?id=${this.searchId}`
+      }
+    }
+
+    onLoad(search) {
+      const self = this
+
+      utils.loading()
+      this.searchId = search.id
+
+      DB.queryById(search.id).then(res => {
+        self.detail = res.attributes
+        self.$apply()
+        utils.loading(true)
 //                wx.setNavigationBarTitle({
 //                    title: `${this.detail.talkIsPub ? this.detail.user.nickName : '匿名用户'}的心情特写`
 //                })
-            })
-    
-            wx.getSystemInfo({
-                success (res) {
-                    self.screenRect = {
-                        height: res.screenHeight,
-                        width: res.screenWidth
-                    }
-                    self.$apply()
-                }
-            })
+      })
+
+      wx.getSystemInfo({
+        success (res) {
+          self.screenRect = {
+            height: res.screenHeight,
+            width: res.screenWidth
+          }
+          self.$apply()
         }
+      })
     }
+  }
 </script>

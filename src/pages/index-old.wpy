@@ -1,51 +1,35 @@
 <style lang="less">
   .qms {
-    position: relative;
     background-color: #fff;
-    width: 600rpx;
-    height: 100%;
+    padding: 20rpx 30rpx;
+    margin-bottom: 20px;
+
+    &:first-child {
+      margin-top: 20px;
+    }
 
     .qms-image {
       width: 60rpx;
       height: 60rpx;
     }
 
-    .qms-img {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      bottom: 120px;
-      width: auto;
-      height: auto;
+    .avatar-info {
+      display: flex;
+      align-items: center;
     }
 
     .qms-content {
-      position: absolute;
-      bottom: 25px;
-      left: 0;
-      right: 0;
-      height: 95px;
-      padding: 10px;
-    }
+      padding-top:10px;
+      margin: 20rpx 0;
+      word-break: break-all;
 
-    .qms-info {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 25px;
-      bottom: 0;
-      padding: 0 10px;
-      font-size: 8px;
+      &.bd-b {
+        padding-bottom: 20rpx;
+      }
     }
-
-    .qms-author {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      bottom: 30px;
-      color: #999999;
+    .qms-img {
+      height:150px !important;
+      margin-top: 20rpx;
     }
   }
 
@@ -53,105 +37,105 @@
     padding:10px 0 30px 0
   }
 
-  /*.tag-area {*/
-    /*padding:0 10px;*/
+  .tag-area {
+    padding:0 10px;
 
-    /*.comment-tag {*/
-      /*width: 16px;*/
-      /*height: 16px;*/
-    /*}*/
-  /*}*/
-
-  .scroll-view_H {
-    white-space: nowrap;
-    position: absolute;
-    top: 0;
-    bottom: 80px;
-  }
-  .scroll-view-item_H {
-    display: inline-block;
-    white-space: normal;
-    margin: 0 10px;
+    .comment-tag {
+      width: 16px;
+      height: 16px;
+    }
   }
 </style>
 <template>
   <view class="container">
-    <scroll-view class="scroll-view_H" scroll-x @scrolltolower="scrollEnd">
-      <repeat for="{{ tableContentList }}" key="{{ item.id }}">
-      <view class="qms scroll-view-item_H" @tap="seeCard({{index}})">
+    <view class="qms"
+          wx:for="{{ tableContentList }}"
+          wx:for-item="item"
+          wx:key="id">
+      <view class="qms-top flex-center-between">
+        <view class="avatar-info">
+          <image
+            class="qms-image"
+            src="{{ item.user && item.talkIsPub ? item.user.avatarUrl : '../libs/image/default.png' }}"
+            lazy-load="true"/>
+
+          <view class="m-l20">
+            <view class="color-blue">{{ item.user && item.talkIsPub ? item.user.nickName : '匿名用户' }}</view>
+            <view class="color-999 font-12" wx:if="{{ item.talkIsPub && item.talkIsShowSystemInfo }}">
+              <!--<text class="iconfont font-12 color-ccc">&#xe6ec;</text>-->
+              <text>{{ item.talkSystemInfo.model }}</text>
+              <!--<text>{{ getModel(item.talkSystemInfo.model2) }}</text>-->
+            </view>
+          </view>
+        </view>
+        <view class="font-12 color-999">{{ item.createdAt }}</view>
+      </view>
+
+      <view class="qms-content">
+        <text>{{ item.talkContent }}</text>
+
         <image
           wx:if="{{ item.talkImg.length > 0 }}"
-          mode="scaleToFill"
-          class="qms-img"
-          src="{{ item.talkImg[0].url }}"/>
-
-        <view class="qms-content">
-          <text>{{ item.talkContent }}</text>
-        </view>
-
-        <view class="qms-info flex-center-between">
-          <view>
-            <text>@{{ item.user.nickName }}</text>
-            <text>{{' '}}</text>
-            <text>#感悟 10</text>
-          </view>
-          <view wx:if="{{ item.talkAddress }}">
-            <text>{{ item.talkAddress.name }}</text>
-          </view>
-          <!--<view class="flex-center-between font-12 color-999" @tap="del({{index}})" wx:if="{{ item.openid === userInfo.openid }}">-->
-            <!--<view wx:if="{{ item.talkIsCard }}" hover-class="bg-f2">-->
-              <!--<text class="iconfont font-14 color-aaa">&#xe642;</text>-->
-            <!--</view>-->
-            <!--<view class="flex-center tag-area" hover-class="bg-f2" @tap="clickCommentTag({{ index }})">-->
-              <!--<image class="comment-tag" src="../libs/image/comment.png"/>-->
-            <!--</view>-->
-            <!--<view hover-class="bg-f2">-->
-              <!--<text class="iconfont font-14 color-aaa">&#xe660;</text>-->
-            <!--</view>-->
-            <!--<text>删除</text>-->
-          <!--</view>-->
-        </view>
-
-        <!--地址，评论-->
-        <!--<view class="flex-center-between bd-t p-t20">-->
-          <!--<view wx:else></view>-->
-        <!--</view>-->
-
-        <!--评论-->
-        <!--<view class="bg-f2 p-10 m-t20 comment-content-wrap font-12" wx:if="{{ item.comments.length > 0 }}">-->
-          <!--<view-->
-            <!--class="flex-center-start"-->
-            <!--wx:for="{{ item.comments }}"-->
-            <!--wx:key="id"-->
-            <!--wx:for-item="cItem"-->
-            <!--wx:for-index="cIndex"-->
-            <!--hover-class="bg-cc"-->
-            <!--@tap="reComment({{cItem.fUser}}, {{index}}, {{cItem}}, {{cIndex}})"-->
-            <!--@longpress="deleteComment">-->
-
-            <!--<view wx:if="{{cItem.tUser.openid === item.openid}}">-->
-              <!--<text class="color-blue">{{cItem.fUser.name}}</text>-->
-            <!--</view>-->
-            <!--<view wx:elif>-->
-              <!--<text class="color-blue">{{cItem.fUser.name}}</text>-->
-              <!--<text class="color-666">回复</text>-->
-              <!--<text class="color-blue">{{cItem.tUser.name}}</text>-->
-            <!--</view>-->
-            <!--<view>-->
-              <!--<text class="color-666">：{{ cItem.content }}</text>-->
-            <!--</view>-->
-          <!--</view>-->
-        <!--</view>-->
+          mode="aspectFill"
+          class="w-100 qms-img"
+          src="{{ item.talkImg[0].url }}"
+          @tap="previewImage({{index}})"/>
       </view>
-      </repeat>
-      <!--<view class="t-c font-12 no-more" wx:if="{{ noMoreData }}">-->
-        <!--<text class="color-999">没有更多数据了</text>-->
-      <!--</view>-->
 
-      <!--<block wx:if="{{ currentItem }}">-->
-        <!--<comment @comment-confirm.user="commentConfirm" @hide-comment="hideComment"/>-->
-      <!--</block>-->
-    </scroll-view>
+      <!--地址，评论-->
+      <view class="flex-center-between bd-t p-t20">
+        <view wx:if="{{ item.talkAddress }}">
+          <text class="font-12 color-ccc">{{ item.talkAddress.name }}</text>
+        </view>
+        <view wx:else></view>
+
+        <view class="flex-center-between">
+          <view wx:if="{{ item.talkIsCard }}" hover-class="bg-f2" @tap="seeCard({{index}})">
+            <text class="iconfont font-14 color-aaa">&#xe642;</text>
+          </view>
+          <view class="flex-center tag-area" hover-class="bg-f2" @tap="clickCommentTag({{ index }})">
+            <image class="comment-tag" src="../libs/image/comment.png"/>
+          </view>
+          <view wx:if="{{ item.openid === userInfo.openid }}" hover-class="bg-f2" @tap="del({{index}})">
+            <text class="iconfont font-14 color-aaa">&#xe660;</text>
+          </view>
+        </view>
+      </view>
+
+      <!--评论-->
+      <view class="bg-f2 p-10 m-t20 comment-content-wrap font-12" wx:if="{{ item.comments.length > 0 }}">
+        <view
+          class="flex-center-start"
+          wx:for="{{ item.comments }}"
+          wx:key="id"
+          wx:for-item="cItem"
+          wx:for-index="cIndex"
+          hover-class="bg-cc"
+          @tap="reComment({{cItem.fUser}}, {{index}}, {{cItem}}, {{cIndex}})"
+          @longpress="deleteComment">
+
+          <view wx:if="{{cItem.tUser.openid === item.openid}}">
+            <text class="color-blue">{{cItem.fUser.name}}</text>
+          </view>
+          <view wx:elif>
+            <text class="color-blue">{{cItem.fUser.name}}</text>
+            <text class="color-666">回复</text>
+            <text class="color-blue">{{cItem.tUser.name}}</text>
+          </view>
+          <view>
+            <text class="color-666">：{{ cItem.content }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="t-c font-12 no-more" wx:if="{{ noMoreData }}">
+      <text class="color-999">没有更多数据了</text>
+    </view>
+
+    <block wx:if="{{ currentItem }}">
+      <comment @comment-confirm.user="commentConfirm" @hide-comment="hideComment"/>
+    </block>
   </view>
 </template>
 
@@ -179,7 +163,7 @@
       currentPageIndex: 1,
       loading: false,
       noMoreData: false,
-      currentItem: null,
+      currentItem: null
     }
 
     events = {
@@ -189,7 +173,9 @@
     }
 
     computed = {
-
+      now () {
+        return +new Date()
+      }
     }
 
     methods = {
@@ -324,13 +310,6 @@
             })
           }
         })
-      },
-
-      scrollEnd(e) {
-        // console.log(e)
-        if (!this.loading && !this.noMoreData) {
-          this.getList()
-        }
       }
     }
 
@@ -341,22 +320,18 @@
       }
     }
 
-    onLoad() {
-      // console.log(this.$parent.screenRect)
+    onPullDownRefresh () {
+      this.resetData()
+      this.getList()
+      wx.stopPullDownRefresh()
     }
 
-    // onPullDownRefresh () {
-    //   this.resetData()
-    //   this.getList()
-    //   wx.stopPullDownRefresh()
-    // }
-
-    // onReachBottom () {
-    //   if (!this.loading && !this.noMoreData) {
-    //     this.loading = true
-    //     this.getList()
-    //   }
-    // }
+    onReachBottom () {
+      if (!this.loading && !this.noMoreData) {
+        this.loading = true
+        this.getList()
+      }
+    }
 
     resetData () {
       this.tableContentList = []
@@ -405,8 +380,6 @@
         ? this.tableContentList[this.tableContentList.length - 1].originCreatedAt
         : new Date()
 
-      this.loading = true
-
       DB.queryBy('talk', false, 5, lastCreateTime).then((res) => {
         res = res.filter(x => x.createdAt.getTime() !== lastCreateTime.getTime())
 
@@ -428,11 +401,9 @@
           this.getComment(res.map(item => item.id), lastCreateTime)
         }
 
-        setTimeout(()=> {
-          this.loading = false
-          utils.loading(true)
-          this.$apply()
-        }, 1000)
+        this.loading = false
+        this.$apply()
+        utils.loading(true)
       })
     }
 

@@ -17,7 +17,7 @@ export default {
             })
         })
     },
-    
+
     loading (title = '加载中') {
         if (typeof title === 'boolean') {
             wx.hideLoading()
@@ -25,11 +25,11 @@ export default {
             wx.showLoading({ title })
         }
     },
-    
+
     modal (opt = {}) {
         return new Promise((resolve, reject) => {
             wx.showModal({
-                title: opt.title || '提示',
+                title: opt.title || '',
                 content: opt.content || '提示内容',
                 showCancel: opt.showCancel || false,
                 confirmColor: '#FC9153',
