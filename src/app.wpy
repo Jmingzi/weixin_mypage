@@ -31,29 +31,29 @@
         'pages/addTalk',
         'pages/seeCard'
       ],
-      // tabBar: {
-      //   color: '#666666',
-      //   selectedColor: '#FC9153',
-      //   backgroundColor: '#ffffff',
-      //   list: [{
-      //     pagePath: 'pages/index',
-      //     // text: '小心情',
-      //     iconPath: './libs/image/yx.png',
-      //     selectedIconPath: './libs/image/yx2.png'
-      //   },{
-      //     pagePath: 'pages/addTalk',
-      //     // 'text': '寄心情',
-      //     iconPath: './libs/image/jg.png',
-      //     selectedIconPath: './libs/image/jg2.png'
-      //   },
-      //   {
-      //    'pagePath': 'pages/addTalk',
-      //    'text': '我',
-      //    iconPath: './libs/image/user.png',
-      //    selectedIconPath: './libs/image/user2.png'
-      //   }
-      //   ]
-      // },
+      tabBar: {
+        color: '#666666',
+        selectedColor: '#FC9153',
+        backgroundColor: '#ffffff',
+        list: [{
+          pagePath: 'pages/index',
+          text: '看心情',
+          iconPath: './libs/image/yx.png',
+          selectedIconPath: './libs/image/yx2.png'
+        },{
+          pagePath: 'pages/addTalk',
+          text: '写心情',
+          iconPath: './libs/image/jg.png',
+          selectedIconPath: './libs/image/jg2.png'
+        },
+        // {
+        //  'pagePath': 'pages/addTalk',
+        //  'text': '我',
+        //  iconPath: './libs/image/user.png',
+        //  selectedIconPath: './libs/image/user2.png'
+        // }
+        ]
+      },
       window: {
         backgroundTextStyle: 'light',
         backgroundColor: '#f2f2f2',

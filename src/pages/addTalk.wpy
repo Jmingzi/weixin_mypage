@@ -1,244 +1,336 @@
 <style lang="scss">
-    textarea {
-        height: 120rpx;
-        margin: 20rpx;
-        width:auto;
-    }
-    
-    .pic-wrap {
-        margin: 20rpx;
-        width: 160rpx;
-        height: 160rpx;
-        background-color: #eee;
-        
-        .iconfont {
-            font-size: 40px;
-            color: #ccc;
-        }
-    }
-    
-    .img-mask {
-        background:rgba(255,255,255,0.2);
-    }
+  textarea {
+    height: 160rpx;
+    padding: 0 20rpx;
+    width: 550rpx;
+  }
 
-    .submit-btn {
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: 30rpx;
+  .pic-wrap {
+    margin: 20rpx;
+    width: 160rpx;
+    height: 160rpx;
+    background-color: #eee;
+
+    .iconfont {
+      font-size: 40px;
+      color: #ccc;
     }
-    .del {
-        top:0;
-        right:0;
-        
-        .iconfont {
-            font-size: 16px;
-        }
+  }
+
+  .img-mask {
+    background:rgba(255,255,255,0.2);
+  }
+
+  .submit-btn {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 20rpx;
+  }
+
+  .btn-small {
+    width: 100px;
+    margin: 20px auto;
+    display: block;
+    border-color: transparent;
+  }
+
+  .del {
+    top:0;
+    right:0;
+
+    .iconfont {
+      font-size: 16px;
     }
+  }
+
+  .set-type {
+    position: absolute;
+    top: 202rpx;
+    bottom: 102rpx;
+    left: 0;
+    right: 0;
+    background-color: #f2f2f2;
+  }
+
+  .set-wrap {
+    position: absolute;
+    //left: 50%;
+    //transform: translateX(-50%);
+    //width: 60%;
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    bottom: 10px;
+    background-color: #fff;
+  }
+
+  .set-type-2 {
+    image {
+      position:absolute;
+      top:10px;
+      bottom:80px;
+      left:10px;
+      right:10px;
+      width: auto;
+      height: auto;
+    }
+    .text {
+      padding: 10px 20px;
+      position:absolute;
+      bottom:10px;
+    }
+  }
+
+  .set-type-1 {
+    image {
+      width: 100%;
+      height: 100px;
+    }
+    .text {
+      writing-mode:tb-rl;
+      margin:0 auto 20px auto;
+      letter-spacing:4px;
+      position:absolute;
+      top:120px;
+      left:50%;
+      transform: translateX(-50%);
+    }
+  }
 </style>
 
 <template>
-    <view class="container bg-ff">
-        <view class="input-area bd-b">
-            <textarea bindinput="inputChange"
-                      value="{{ text }}"
-                      maxlength="60"
-                      placeholder="说点什么吧..." />
-            
-            <view class="flex-center-start">
-                <view class="pic-wrap p-r" wx:if="{{ img.length > 0 }}">
-                    <image class="w-100 h-100" src="{{ img[0].url }}"/>
-                    <view class="w-100 h-100 p-a l-0 t-0 bg-fa img-mask flex-center" wx:if="{{ img[0].upload === false }}">
-                        <text>上传中...</text>
-                    </view>
-                    <view class="del p-a" wx:if="{{ img[0].upload }}" @tap="delImg">
-                        <text class="iconfont color-red">&#xe605;</text>
-                    </view>
-                </view>
-    
-                <view class="pic-wrap flex-center" @tap="chooseImg" wx:else>
-                    <text class="iconfont">&#xe616;</text>
-                </view>
-            </view>
+  <view class="container">
+    <view class="input-area bg-ff bd-b flex-center-between">
+      <textarea
+        bindinput="inputChange"
+        value="{{ text }}"
+        maxlength="100"
+        placeholder="让心情用文字来表达..." />
+
+      <view class="flex-center">
+        <view class="pic-wrap p-r" wx:if="{{ img.length > 0 }}">
+          <image class="w-100 h-100" src="{{ img[0].url }}"/>
+          <view class="w-100 h-100 p-a l-0 t-0 bg-fa img-mask flex-center" wx:if="{{ img[0].upload === false }}">
+            <text>上传中...</text>
+          </view>
+          <view class="del p-a" wx:if="{{ img[0].upload }}" @tap="delImg">
+            <text class="iconfont color-red">&#xe605;</text>
+          </view>
         </view>
-        
-        <view class="flex-center-between bd-b l-100 p-lr20" @tap="locate">
-            <text>{{ address ? address.name : '地点' }}</text>
-            <text class="iconfont color-999">&#xe621;</text>
+
+        <view class="pic-wrap flex-center" @tap="chooseImg" wx:else>
+          <text class="iconfont">&#xe616;</text>
         </view>
-    
-        <view class="flex-center-between bd-b l-100 p-lr20">
-            <text>公开昵称</text>
-            <switch checked="{{ isPub }}" color="#FC9153" data-field="isPub" bindchange="switchChange"/>
-        </view>
-    
-        <view class="flex-center-between bd-b l-100 p-lr20">
-            <text>心情特写</text>
-            <switch checked="{{ isCard }}" data-field="isCard" color="#FC9153" bindchange="switchChange"/>
-        </view>
-    
-        <view class="flex-center-between bd-b l-100 p-lr20">
-            <text>显示设备信息</text>
-            <switch checked="{{ isShowSystemInfo }}" data-field="isShowSystemInfo" color="#FC9153" bindchange="switchChange"/>
-        </view>
-    
-        <view class="btn btn-main submit-btn p-a bg-main color-fff" hover-class="h-bg-main-f" @tap="submit">
-            <!--<text class="iconfont">&#xe620;</text>-->
-            <text>立即邮寄</text>
-        </view>
+      </view>
     </view>
+
+    <!--<view class="btn btn-small bg-main color-fff" hover-class="h-bg-main-f">-->
+      <!--<text>选择排版</text>-->
+    <!--</view>-->
+    <view class="set-type">
+      <view class="set-wrap set-type-{{setType}}" @tap="changeSetType">
+        <image
+          mode="aspectFill"
+          wx:if="{{ img[0].upload }}"
+          src="{{ img[0].url }}"/>
+
+        <view class="text">
+          <text>
+            <text wx:if="{{setType === 1}}" class="color-red font-12">o</text>
+            <text>{{ text ? text : '让心情用文字来表达...' }}</text>
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!--<view class="flex-center-between bd-b l-100 p-lr20" @tap="locate">-->
+      <!--<text>{{ address ? address.name : '地点' }}</text>-->
+      <!--<text class="iconfont color-999">&#xe621;</text>-->
+    <!--</view>-->
+
+    <!--<view class="flex-center-between bd-b l-100 p-lr20">-->
+      <!--<text>公开昵称</text>-->
+      <!--<switch checked="{{ isPub }}" color="#FC9153" data-field="isPub" bindchange="switchChange"/>-->
+    <!--</view>-->
+
+    <!--<view class="flex-center-between bd-b l-100 p-lr20">-->
+      <!--<text>心情特写</text>-->
+      <!--<switch checked="{{ isCard }}" data-field="isCard" color="#FC9153" bindchange="switchChange"/>-->
+    <!--</view>-->
+
+    <!--<view class="flex-center-between bd-b l-100 p-lr20">-->
+      <!--<text>显示设备信息</text>-->
+      <!--<switch checked="{{ isShowSystemInfo }}" data-field="isShowSystemInfo" color="#FC9153" bindchange="switchChange"/>-->
+    <!--</view>-->
+
+    <view class="btn btn-main submit-btn p-a bg-main color-fff" hover-class="h-bg-main-f" @tap="submit">
+      <text>提交</text>
+    </view>
+  </view>
 </template>
 
 <script>
-    import wepy from 'wepy'
-    import DB from '../libs/db'
-    import utils from '../libs/utils'
-    import AV from '../libs/av-weapp-min.js'
+  import wepy from 'wepy'
+  import DB from '../libs/db'
+  import utils from '../libs/utils'
+  import AV from '../libs/av-weapp-min.js'
 
-    export default class addTalk extends wepy.page {
-        config = {
-            navigationBarTitleText: '寄心情'
-        }
-        
-        data = {
-            text: '',
-            img: [],
-            address: null,
-            isPub: true,
-            isCard: false,
-            isShowSystemInfo: true,
-            systemInfo: null
-        }
-    
-        onLoad = () => {
-            const self = this
-            
-            utils.loading()
-            wx.getSystemInfo({
-                success (res) {
-                    // self.systemInfo = { model: res.model }
-                    res.model2 = res.model
-                    self.systemInfo = Object.assign(res, {
-                        model: `${res.brand} ${res.version.split('.')[0]}`
-                    })
-                    self.$apply()
-                    
-                    utils.loading(true)
-                }
-            })
-        }
-        
-        getForm () {
-            if (!this.text.trim()) {
-                utils.modal({ content: '请输入内容' })
-                return false
-            }
-            
-            if (this.img.some(x => x.upload === false)) {
-                utils.modal({ content: '请等待图片上传完成' })
-                return false
-            }
-            
-            return Object.assign({
-                talkContent: this.text,
-                talkImg: this.img,
-                talkAddress: this.address,
-                talkIsPub: this.isPub,
-                talkIsCard: this.isCard,
-                talkIsShowSystemInfo: this.isShowSystemInfo,
-                talkSystemInfo: this.systemInfo,
-                dataType: 'talk'
-            }, DB.commonField())
-        }
-        
-        methods = {
-            inputChange (e) {
-                this.text = e.detail.value
-            },
-    
-            switchChange (e) {
-                // this.isPub = e.detail.value
-                this[e.target.dataset.field] = e.detail.value
-            },
-    
-            delImg () {
-                const file = AV.File.createWithoutData(this.img[0].fileId)
-                utils.loading()
-                
-                file.destroy().then(() => {
-                    this.img = []
-                    this.$apply()
-                    utils.loading(true)
-                })
-            },
-    
-            locate () {
-                const self = this
-                wx.chooseLocation({
-                    success (res) {
-                        if (!res.name) {
-                            utils.modal({ content: '请选择一个地点' })
-                            return
-                        }
-                
-                        self.address = res
-                        self.$apply()
-                    }
-                })
-            },
-            
-            chooseImg () {
-                //if (this.img.length >= 3) {
-                //    utils.modal({ content: '图片最多上传3张哦~' })
-                //}
-                const self = this
-                
-                wx.chooseImage({
-                    count: 1,
-                    success (res) {
-                        // console.log(res)
-                        let tempFilePath = res.tempFilePaths[0]
-                        self.img = [{ url: tempFilePath, upload: false, fileId: 0 }]
-                        self.$apply()
-                        
-                        // 文件上传
-                        new AV.File('file-name', {
-                            blob: { uri: tempFilePath },
-                        }).save().then(file => {
-                            self.img[0].url = file.url()
-                            self.img[0].thumbUrl = file.thumbnailURL(420, 200)
-                            self.img[0].upload = true
-                            self.img[0].fileId = file.id
-                            self.$apply()
-                        }).catch(console.error)
-                    }
-                })
-            },
-    
-            submit () {
-                const data = this.getForm()
-                
-                if (!data) {
-                    return
-                }
-                
-                const dbContent = DB.setTableContent()
-                Object.keys(data).forEach(field => {
-                    dbContent.set(field, data[field])
-                })
-    
-                dbContent.save().then(function (todo) {
-                    utils.toast('邮寄心情成功').then(() => {
-                        wx.setStorageSync('isAddNewTalk', 1)
-                        wx.switchTab({
-                            url: 'index'
-                        })
-                        //wx.navigateBack()
-                    })
-                }, function (error) {
-                    console.log(error)
-                    utils.toast(`保存失败:${error.message}`, 'loading')
-                })
-            }
-        }
+  export default class addTalk extends wepy.page {
+    config = {
+      navigationBarTitleText: '写心情'
     }
+
+    data = {
+      text: '',
+      img: [],
+      address: null,
+      isPub: true,
+      isCard: true,
+      isShowSystemInfo: true,
+      systemInfo: null,
+      setType: 1
+    }
+
+    onLoad = () => {
+      const self = this
+
+      utils.loading()
+      wx.getSystemInfo({
+        success (res) {
+          // self.systemInfo = { model: res.model }
+          res.model2 = res.model
+          self.systemInfo = Object.assign(res, {
+            model: `${res.brand} ${res.version.split('.')[0]}`
+          })
+          self.$apply()
+
+          utils.loading(true)
+        }
+      })
+    }
+
+    getForm () {
+      if (!this.text.trim()) {
+        utils.modal({ content: '请输入内容' })
+        return false
+      }
+
+      if (this.setType === 2 && this.img.length === 0) {
+        utils.modal({ content: '请选择图片' })
+        return
+      }
+
+      if (this.img.some(x => x.upload === false)) {
+        utils.modal({ content: '请等待图片上传完成' })
+        return false
+      }
+
+      return Object.assign({
+        talkContent: this.text,
+        talkImg: this.img,
+        talkAddress: this.address,
+        talkIsPub: this.isPub,
+        talkIsCard: this.isCard,
+        talkIsShowSystemInfo: this.isShowSystemInfo,
+        talkSystemInfo: this.systemInfo,
+        dataType: 'talk',
+        setType: this.setType
+      }, DB.commonField())
+    }
+
+    methods = {
+      inputChange (e) {
+        this.text = e.detail.value
+      },
+
+      changeSetType() {
+        this.setType = this.setType === 1 ? 2 : 1
+      },
+
+      switchChange (e) {
+        // this.isPub = e.detail.value
+        this[e.target.dataset.field] = e.detail.value
+      },
+
+      delImg () {
+        const file = AV.File.createWithoutData(this.img[0].fileId)
+        utils.loading()
+
+        file.destroy().then(() => {
+          this.img = []
+          this.$apply()
+          utils.loading(true)
+        })
+      },
+
+      locate () {
+        const self = this
+        wx.chooseLocation({
+          success (res) {
+            if (!res.name) {
+              utils.modal({ content: '请选择一个地点' })
+              return
+            }
+
+            self.address = res
+            self.$apply()
+          }
+        })
+      },
+
+      chooseImg () {
+        //if (this.img.length >= 3) {
+        //    utils.modal({ content: '图片最多上传3张哦~' })
+        //}
+        const self = this
+
+        wx.chooseImage({
+          count: 1,
+          success (res) {
+            // console.log(res)
+            let tempFilePath = res.tempFilePaths[0]
+            self.img = [{ url: tempFilePath, upload: false, fileId: 0 }]
+            self.$apply()
+
+            // 文件上传
+            new AV.File('file-name', {
+              blob: { uri: tempFilePath },
+            }).save().then(file => {
+              self.img[0].url = file.url()
+              self.img[0].thumbUrl = file.thumbnailURL(420, 200)
+              self.img[0].upload = true
+              self.img[0].fileId = file.id
+              self.$apply()
+            }).catch(console.error)
+          }
+        })
+      },
+
+      submit () {
+        const data = this.getForm()
+
+        if (!data) {
+          return
+        }
+
+        const dbContent = DB.setTableContent()
+        Object.keys(data).forEach(field => {
+          dbContent.set(field, data[field])
+        })
+
+        dbContent.save().then(function (todo) {
+          utils.toast('提交心情成功').then(() => {
+            wx.setStorageSync('isAddNewTalk', 1)
+            wx.switchTab({
+              url: 'index'
+            })
+            //wx.navigateBack()
+          })
+        }, function (error) {
+          console.log(error)
+          utils.toast(`保存失败:${error.message}`, 'loading')
+        })
+      }
+    }
+  }
 </script>

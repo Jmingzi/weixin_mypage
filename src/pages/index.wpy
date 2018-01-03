@@ -10,33 +10,15 @@
       height: 60rpx;
     }
 
-    .qms-img {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      bottom: 120px;
-      width: auto;
-      height: auto;
-    }
-
-    .qms-content {
-      position: absolute;
-      bottom: 25px;
-      left: 0;
-      right: 0;
-      height: 95px;
-      padding: 10px;
-    }
-
     .qms-info {
       position: absolute;
       left: 0;
       right: 0;
-      height: 25px;
+      // height: 25px;
       bottom: 0;
-      padding: 0 10px;
+      padding: 10px;
       font-size: 8px;
+      color: #999999;
     }
 
     .qms-author {
@@ -53,63 +35,101 @@
     padding:10px 0 30px 0
   }
 
-  /*.tag-area {*/
-    /*padding:0 10px;*/
-
-    /*.comment-tag {*/
-      /*width: 16px;*/
-      /*height: 16px;*/
-    /*}*/
-  /*}*/
-
   .scroll-view_H {
     white-space: nowrap;
     position: absolute;
     top: 0;
-    bottom: 80px;
+    left: 0;
+    bottom: 20px;
   }
   .scroll-view-item_H {
     display: inline-block;
     white-space: normal;
     margin: 0 10px;
+
+    &:first-child {
+      margin-left: 20px;
+    }
+  }
+
+  .qms-img {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    height: auto;
+    min-height: 50px;
+  }
+
+  .set-type-,
+  .set-type-2 {
+    .qms-img {
+      bottom: 120px;
+    }
+
+    .qms-content {
+      position: absolute;
+      bottom: 25px;
+      left: 0;
+      right: 0;
+      height: 95px;
+      padding: 10px;
+    }
+  }
+
+  .set-type-1 {
+    .qms-img {
+      height: 200px;
+    }
+    .qms-content {
+      writing-mode:tb-rl;
+      margin:20px auto;
+      letter-spacing:4px;
+      position:absolute;
+      top:220px;
+      left:50%;
+      transform: translateX(-50%);
+    }
   }
 </style>
 <template>
   <view class="container">
     <scroll-view class="scroll-view_H" scroll-x @scrolltolower="scrollEnd">
       <repeat for="{{ tableContentList }}" key="{{ item.id }}">
-      <view class="qms scroll-view-item_H" @tap="seeCard({{index}})">
+      <view class="qms scroll-view-item_H set-type-{{item.setType}}" @tap="seeCard({{index}})">
         <image
           wx:if="{{ item.talkImg.length > 0 }}"
-          mode="scaleToFill"
+          mode="aspectFill"
           class="qms-img"
           src="{{ item.talkImg[0].url }}"/>
 
-        <view class="qms-content">
+        <view class="qms-content" style="top: {{item.talkImg[0]?'':'100px'}}">
+          <text wx:if="{{item.setType === 1}}" class="color-red font-12">o</text>
           <text>{{ item.talkContent }}</text>
         </view>
 
         <view class="qms-info flex-center-between">
           <view>
+            <view wx:if="{{ item.talkAddress }}">
+              <text>{{ item.talkAddress.name }}</text>
+            </view>
             <text>@{{ item.user.nickName }}</text>
             <text>{{' '}}</text>
-            <text>#感悟 10</text>
+            <text>#评论 {{ item.commentNum }}</text>
           </view>
-          <view wx:if="{{ item.talkAddress }}">
-            <text>{{ item.talkAddress.name }}</text>
-          </view>
-          <!--<view class="flex-center-between font-12 color-999" @tap="del({{index}})" wx:if="{{ item.openid === userInfo.openid }}">-->
-            <!--<view wx:if="{{ item.talkIsCard }}" hover-class="bg-f2">-->
-              <!--<text class="iconfont font-14 color-aaa">&#xe642;</text>-->
-            <!--</view>-->
+
+          <view
+            class="flex-center-between color-999"
+            hover-class="bg-f2"
+            @tap.stop="del({{index}})"
+            wx:if="{{ item.openid === userInfo.openid }}">
             <!--<view class="flex-center tag-area" hover-class="bg-f2" @tap="clickCommentTag({{ index }})">-->
               <!--<image class="comment-tag" src="../libs/image/comment.png"/>-->
             <!--</view>-->
-            <!--<view hover-class="bg-f2">-->
-              <!--<text class="iconfont font-14 color-aaa">&#xe660;</text>-->
-            <!--</view>-->
-            <!--<text>删除</text>-->
-          <!--</view>-->
+            <!--<view>-->
+              <text class="iconfont font-12 color-aaa">&#xe660;</text>
+          </view>
         </view>
 
         <!--地址，评论-->
@@ -336,7 +356,7 @@
 
     onShareAppMessage () {
       return {
-        title: '子曰i，心情特写',
+        title: '小心情，用图文来表达',
         path: '/pages/index'
       }
     }
@@ -412,7 +432,10 @@
 
         this.tableContentList = this.tableContentList.concat(res.map(item => {
           // model.match(/iPhone \d.*?/)[0]
-          item.attributes.talkSystemInfo.model = item.attributes.talkSystemInfo.model2.match(/iPhone \d.*?/)[0]
+          item.attributes.talkSystemInfo.model = item.attributes.talkSystemInfo.model2
+            ? item.attributes.talkSystemInfo.model2.match(/iPhone \d.*?/)[0]
+            : ''
+
           return Object.assign({
             id: item.id,
             createdAt: this.formatTime(item.createdAt),
@@ -438,18 +461,19 @@
 
     getComment (contentIds, lastCreateTime) {
       if (contentIds.length > 0) {
-        DB.queryByArray(contentIds).then(res => {
+        DB.queryCount(contentIds, 'comment').then(res=> {
           let index = this.tableContentList.findIndex(x => x.originCreatedAt === lastCreateTime)
-
           this.tableContentList.forEach((item, i) => {
             if (i > index) {
-              item.comments = res.results.filter(x => x.attributes.contentId === item.id)
+              // console.log(index > -1 ? i - index - 1 : i)
+              item.commentNum = res[index > -1 ? i - index -1 : i]
             }
           })
-
-          // console.log(this.tableContentList)
           this.$apply()
         })
+        // DB.queryByArray(contentIds).then(res => {
+        // item.commentNum = res.results.filter(x => x.attributes.contentId === item.id)
+        // })
       }
     }
   }

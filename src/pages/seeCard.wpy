@@ -14,104 +14,95 @@
     right: 10px;
     box-shadow:0 0 3px rgba(0,0,0,.1);
     background-color: #fafafa;
-
-    .both-wrap {
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      bottom: 10px;
-      box-shadow:0 0 1px rgba(0,0,0,0.1);
-      background-color: #fff;
-    }
   }
 
-
-  .lt-height {
-
-    &.lg-screen {
-      .card-img {
-        top: 10px;
-        bottom: 140px;
-        left: 10px;
-        right: 10px;
-      }
-    }
-  }
-
-  .lg-height {
-    &.lg-screen {
-      .both-wrap {
-        height: 360px;
-        // top: 50%;
-        top: 10px;
-        // margin-top: -200px;
-      }
-      .card-img {
-        top: 10px;
-        left: 10px;
-        right: 10px;
-        height: 200px;
-      }
-    }
-  }
-
-  .con-wrap {
-    height: 130px;
-    padding-top: 10px;
+  .card-img {
+    position: absolute;
+    top: 10px;
     left: 10px;
     right: 10px;
-    bottom: 10px;
+  }
 
-    .content {
-      line-height:1.5;
+  .set-type-,
+  .set-type-2 {
+    .card-img {
+      bottom: 150px;
+    }
+    .con-wrap {
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      right: 0;
+      height: 90px;
+      padding: 10px;
+    }
+  }
+
+  .set-type-1 {
+    .card-img {
+      height: 200px;
+    }
+    .con-wrap {
+      writing-mode:tb-rl;
+      margin:20px auto;
+      letter-spacing:4px;
+      position:absolute;
+      top:220px;
+      left:50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .card-bottom {
+    left: 10px;
+    bottom: 10px;
+    right: 10px;
+
+    .avatar {
+      image {
+        width: 30px;
+        height: 30px;
+        border-radius: 20px;
+        margin-right: 5px;
+      }
     }
 
-    .code {
-      width: 125px;
-      height: 50px;
-      bottom: 0;
-      right: 0;
-
-      image {
-        width: 50px;
-        height: 100%;
-      }
+    .code-img {
+      width: 40px;
+      height: 40px;
     }
   }
 </style>
 
 <template>
-  <view class="wrap p-a w-100 l-0 t-0 bg-f2">
+  <view class="wrap p-a w-100 l-0 t-0 bg-f2" @tap="redirect">
     <block wx:if="{{ detail }}">
-      <view class="img-wrap p-a {{ imgLgScreen ? 'lg-screen' : 'lt-screen' }} {{ imgWidthLgHeight ? 'lg-height' : 'lt-height' }}">
-
-        <view class="both-wrap p-a">
-
-          <view class="card-img p-a">
-            <image class="w-100 h-100"
-                   bindload="imageLoad"
-                   mode="aspectFill"
-                   src="{{ detail.talkImg[0].url }}"
-                   @tap="previewImage({{detail.talkImg[0].url}})"/>
+      <view class="img-wrap p-a set-type-{{detail.setType}}">
+        <view class="card-img p-a">
+          <image
+            class="w-100 h-100"
+            bindload="imageLoad"
+            mode="aspectFill"
+            src="{{ detail.talkImg[0].url }}"
+            @tap.stop="previewImage({{detail.talkImg[0].url}})"/>
+        </view>
+        <view class="con-wrap p-a" style="top: {{detail.talkImg[0]?'':'100px'}}">
+          <view class="font-14 content p-t5">
+            <text wx:if="{{detail.setType === 1}}" class="color-red font-12">o</text>
+            <text>{{ detail.talkContent }}</text>
           </view>
-          <view class="con-wrap p-a l-0">
-            <view class="font-10 flex-center-between p-t5">
-              <text wx:if="detail.talkAddress" class="color-666">{{ detail.talkAddress.name }}</text>
-              <text class="color-666">心情特写来自 @{{ detail.talkIsPub ? detail.user.nickName : '匿名用户' }}</text>
-            </view>
-            <view class="font-14 content p-t5">
-              <text>{{ detail.talkContent }}</text>
-            </view>
+        </view>
 
-            <view class="p-a code flex-center-between" @tap="redirect">
-              <view class="font-10 color-999 t-r">
-                <view>子曰i，心情特写</view>
-                <view>点击查看更多</view>
-              </view>
-              <image src="../libs/image/code.jpg"/>
-            </view>
+        <view class="card-bottom p-a flex-center-between">
+          <view class="avatar flex-center-between">
+            <image src="{{ detail.user.avatarUrl }}"/>
+            <text class="font-10 color-999">{{ detail.user.nickName }}</text>
           </view>
 
+          <view class="flex-center-between">
+            <text class="font-10 color-999">小心情</text>
+            <image class="code-img" src="../libs/image/code.jpg"/>
+          </view>
         </view>
       </view>
     </block>
@@ -145,10 +136,14 @@
 
       redirect () {
         wx.showActionSheet({
-          itemList: ['发布我的心情特写', '去小程序首页'],
-          itemColor: '#22a7f0',
+          itemList: ['首页', '写心情', '保存图片'],
+          itemColor: '#666',
           success (res) {
-            wx.switchTab({url: ['addTalk', 'index'][res.tapIndex]})
+            if (res.tapIndex === 2) {
+
+            } else {
+              wx.switchTab({url: ['index', 'addTalk'][res.tapIndex]})
+            }
           }
         })
       }
