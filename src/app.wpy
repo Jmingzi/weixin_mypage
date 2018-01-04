@@ -38,13 +38,13 @@
         list: [{
           pagePath: 'pages/index',
           text: '看心情',
-          iconPath: './libs/image/yx.png',
-          selectedIconPath: './libs/image/yx2.png'
+          iconPath: './libs/image/syc2.png',
+          selectedIconPath: './libs/image/syc.png'
         },{
           pagePath: 'pages/addTalk',
           text: '写心情',
-          iconPath: './libs/image/jg.png',
-          selectedIconPath: './libs/image/jg2.png'
+          iconPath: './libs/image/bj2.png',
+          selectedIconPath: './libs/image/bj.png'
         },
         // {
         //  'pagePath': 'pages/addTalk',

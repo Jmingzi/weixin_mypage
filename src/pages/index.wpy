@@ -171,6 +171,13 @@
       <!--<block wx:if="{{ currentItem }}">-->
         <!--<comment @comment-confirm.user="commentConfirm" @hide-comment="hideComment"/>-->
       <!--</block>-->
+  
+      <canvas
+        class="bg-ff"
+        style="width:{{width-20}}px;height:{{height-20}}px;"
+        canvas-id="firstCanvas">
+      </canvas>
+      
     </scroll-view>
   </view>
 </template>
@@ -200,6 +207,8 @@
       loading: false,
       noMoreData: false,
       currentItem: null,
+      width:0,
+      height:0
     }
 
     events = {
@@ -362,7 +371,68 @@
     }
 
     onLoad() {
-      // console.log(this.$parent.screenRect)
+      this.width = this.$parent.screenRect.width
+      this.height = this.$parent.screenRect.height
+      let context = wx.createCanvasContext('firstCanvas')
+      let imgW = this.width - 40
+      let imgH = 200 || this.height - 40
+  
+      context.setFontSize(14)
+      
+      context.arc(27, 20, 3, 0, 2 * Math.PI)
+      context.setStrokeStyle('red')
+  
+      context.fillText('我', 20, 20 + 5 + 14)
+      context.fillText('一', 20, 20 + 5 + 14 * 2)
+      context.fillText('开', 20, 20 + 5 + 14 * 3)
+      context.fillText('是', 20, 20 + 5 + 14 * 4)
+      context.setStrokeStyle("#db493a")
+  
+      context.stroke()
+  
+      context.draw()
+  
+      setTimeout(()=> {
+        wx.canvasToTempFilePath({
+          x: 100,
+          y: 200,
+          width: 50,
+          height: 50,
+          destWidth: 100,
+          destHeight: 100,
+          canvasId: 'firstCanvas',
+          success: function(res) {
+            console.log(res.tempFilePath)
+          }
+        })
+      }, 2000)
+      
+      
+      // wx.chooseImage({
+      //   success: function(res){
+      //     context.drawImage(res.tempFilePaths[0], 10, 10, imgW, imgH)
+      //     context.draw()
+      //   }
+      // })
+      
+      // context.setStrokeStyle("#00ff00")
+      // context.setLineWidth(5)
+      // context.rect(0, 0, 200, 200)
+      // context.stroke()
+      // context.setStrokeStyle("#ff0000")
+      // context.setLineWidth(2)
+      // context.moveTo(160, 100)
+      // context.arc(100, 100, 60, 0, 2 * Math.PI, true)
+      // context.moveTo(140, 100)
+      // context.arc(100, 100, 40, 0, Math.PI, false)
+      // context.moveTo(85, 80)
+      // context.arc(80, 80, 5, 0, 2 * Math.PI, true)
+      // context.moveTo(125, 80)
+      // context.arc(120, 80, 5, 0, 2 * Math.PI, true)
+      // context.stroke()
+      // context.draw()
+      /// console.log(this.$parent.screenRect)
+      
     }
 
     // onPullDownRefresh () {
@@ -388,12 +458,12 @@
       const isAddNewTalk = wx.getStorageSync('isAddNewTalk')
 
       if (!this.userInfo.avatarUrl) {
-        this.$parent.getUserInfo(user => {
-          this.userInfo = user
-
-          this.$apply()
-          this.getList()
-        })
+        // this.$parent.getUserInfo(user => {
+        //   this.userInfo = user
+        //
+        //   this.$apply()
+        //   this.getList()
+        // })
       } else if (isAddNewTalk && isAddNewTalk === 1) {
         console.log('reset data to get list')
         this.resetData()
