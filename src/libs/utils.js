@@ -32,7 +32,7 @@ export default {
                 title: opt.title || '',
                 content: opt.content || '提示内容',
                 showCancel: opt.showCancel || false,
-                confirmColor: '#FC9153',
+                confirmColor: '#3EC041',
                 success (res) {
                     resolve(res)
                 },

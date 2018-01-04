@@ -46,10 +46,10 @@
 .bg-f2 { background-color: #f2f2f2; }
 .bg-fa { background-color: #fafafa; }
 .bg-cc { background-color: #ccc; }
-.bg-main { background:#FC9153; }
+.bg-main { background: rgb(62, 192, 65); }
 
-.h-bg-main { background:#FC9153;color:#fff!important; }
-.h-bg-main-f { background:#fff;color:#FC9153!important; }
+.h-bg-main { background: rgb(62, 192, 65);color:#fff!important; }
+.h-bg-main-f { background:#fff;color: rgb(62, 192, 65)!important; }
 
 .p-r { position: relative; }
 .p-a { position: absolute; }
@@ -85,8 +85,8 @@
 }
 .btn.btn-main {
   width:660rpx;
-  border-color: #FC9153;
-  color:#FC9153;
+  border-color: rgb(62, 192, 65);
+  color: rgb(62, 192, 65);
 }
 
 @font-face {

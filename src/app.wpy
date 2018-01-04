@@ -33,7 +33,7 @@
       ],
       tabBar: {
         color: '#666666',
-        selectedColor: '#FC9153',
+        selectedColor: '#3EC041',
         backgroundColor: '#ffffff',
         list: [{
           pagePath: 'pages/index',
