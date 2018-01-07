@@ -5,8 +5,41 @@
 
   .wrap {
     bottom: 0;
+    overflow: hidden;
+    
+    .notice {
+      position: absolute;
+      top: 0;
+      left: 0;
+      line-height: 40px;
+      background-color: rgba(0,0,0,.5);
+      color: #ffffff;
+      z-index: 11;
+      font-size: 12px;
+      padding: 0 10px;
+      width: 100%;
+      animation: noticeSlide 4s forwards;
+    }
   }
-
+  
+  @keyframes noticeSlide {
+    0% {
+      transform: translateY(-100%);
+    }
+    20% {
+      transform: translateY(-100%);
+    }
+    30% {
+      transform: translateY(0);
+    }
+    90% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+  
   .img-wrap {
     top: 10px;
     bottom: 10px;
@@ -14,6 +47,7 @@
     right: 10px;
     box-shadow:0 0 3px rgba(0,0,0,.1);
     background-color: #fafafa;
+    z-index: 10;
   }
 
   .card-img {
@@ -77,10 +111,15 @@
 
 <template>
   <view class="wrap p-a w-100 l-0 t-0 bg-f2" @tap="redirect">
+    <view class="notice">
+      <text>点击窗口，可直接生成图片哦~</text>
+    </view>
+    
     <block wx:if="{{ detail }}">
       <view class="img-wrap p-a set-type-{{detail.setType}}">
         <view class="card-img p-a">
           <image
+            wx:if="{{detail.talkImg[0]}}"
             class="w-100 h-100"
             bindload="imageLoad"
             mode="aspectFill"
@@ -107,6 +146,13 @@
         </view>
       </view>
     </block>
+  
+    <canvas
+      wx:if="{{showCanvas}}"
+      class="p-a l-0 t-0"
+      style="width:{{canvasWidth}}px;height:{{canvasHeight}}px;"
+      canvas-id="firstCanvas">
+    </canvas>
   </view>
 </template>
 
@@ -125,7 +171,10 @@
       detail: null,
       searchId: 0,
       imageRect: null,
-      screenRect: null
+      screenRect: null,
+      canvasWidth: 0,
+      canvasHeight: 0,
+      showCanvas: true
     }
 
     methods = {
@@ -136,12 +185,23 @@
       },
 
       redirect () {
+        let self = this
         wx.showActionSheet({
           itemList: ['首页', '写心情', '保存图片'],
           itemColor: '#666',
           success (res) {
             if (res.tapIndex === 2) {
-
+              self.showCanvas = true
+              self.$apply()
+  
+              utils.drawCanvas(
+                self.$parent.screenRect,
+                self.detail,
+                ()=> {
+                  self.showCanvas = false
+                  self.$apply()
+                }
+              )
             } else {
               wx.switchTab({url: ['index', 'addTalk'][res.tapIndex]})
             }
@@ -190,20 +250,14 @@
         self.detail = res.attributes
         self.$apply()
         utils.loading(true)
-//                wx.setNavigationBarTitle({
-//                    title: `${this.detail.talkIsPub ? this.detail.user.nickName : '匿名用户'}的心情特写`
-//                })
+        // wx.setNavigationBarTitle({
+        //    title: `${this.detail.talkIsPub ? this.detail.user.nickName : '匿名用户'}的心情特写`
+        // })
       })
 
-      wx.getSystemInfo({
-        success (res) {
-          self.screenRect = {
-            height: res.screenHeight,
-            width: res.screenWidth
-          }
-          self.$apply()
-        }
-      })
+      this.screenRect = this.$parent.screenRect
+      this.canvasWidth = this.screenRect.width
+      this.canvasHeight = this.screenRect.height
     }
   }
 </script>

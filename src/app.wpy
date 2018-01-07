@@ -81,6 +81,7 @@
 
       wx.getSystemInfo({
         success (res) {
+          // console.log(res)
           self.screenRect = {
             height: res.screenHeight,
             width: res.screenWidth

@@ -83,7 +83,11 @@
 
   .set-type-1 {
     image {
-      width: 100%;
+      position: absolute;
+      top:10px;
+      left:10px;
+      right:10px;
+      width: auto;
       height: 100px;
     }
     .text {
@@ -129,6 +133,7 @@
     <!--</view>-->
     <view class="set-type">
       <view class="set-wrap set-type-{{setType}}" @tap="changeSetType">
+        <!--{{setType === 1 ? 'aspectFill' : 'scaleToFill'}}-->
         <image
           mode="aspectFill"
           wx:if="{{ img[0].upload }}"
