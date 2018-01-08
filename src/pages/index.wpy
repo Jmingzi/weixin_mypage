@@ -171,7 +171,7 @@
       <!--<block wx:if="{{ currentItem }}">-->
         <!--<comment @comment-confirm.user="commentConfirm" @hide-comment="hideComment"/>-->
       <!--</block>-->
-      
+
     </scroll-view>
   </view>
 </template>
@@ -363,7 +363,7 @@
     }
 
     onLoad() {
-      this.getList()
+      // this.getList()
     }
 
     // onPullDownRefresh () {
@@ -389,6 +389,7 @@
       const isAddNewTalk = wx.getStorageSync('isAddNewTalk')
 
       if (!this.userInfo.avatarUrl) {
+        console.log('init')
         this.$parent.getUserInfo(user => {
           this.userInfo = user
 
@@ -432,10 +433,9 @@
         res = res.filter(x => x.createdAt.getTime() !== lastCreateTime.getTime())
 
         this.tableContentList = this.tableContentList.concat(res.map(item => {
-          // model.match(/iPhone \d.*?/)[0]
-          item.attributes.talkSystemInfo.model = item.attributes.talkSystemInfo.model2
-            ? item.attributes.talkSystemInfo.model2.match(/iPhone \d.*?/)[0]
-            : ''
+          // item.attributes.talkSystemInfo.model = item.attributes.talkSystemInfo.model2
+          //   ? item.attributes.talkSystemInfo.model2.match(/iPhone \d.*?/)[0]
+          //   : ''
 
           return Object.assign({
             id: item.id,
